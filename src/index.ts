@@ -1,12 +1,26 @@
 import express from 'express';
+import next from 'next';
+import bodyParser from 'body-parser';
 
+const dev = process.env.NODE_ENV !== 'production';
 const PORT = 3000;
-const app = express();
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+app.prepare().then(() => {
+  const server = express();
 
-app.get('/', (_req, res) => {
-  return res.json({ message: 'Hello, World!' });
+  server.use(bodyParser.json());
+
+  server.get('/api', (_req, res) => {
+    return res.json({ message: 'Hello, World!' });
+  });
+
+  server.get('*', (req, res) => {
+    return handle(req, res);
+  });
+
+  server.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+  });
 });
