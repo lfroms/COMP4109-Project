@@ -1,16 +1,17 @@
 import { Router } from 'express';
+import { log } from '../helpers';
+import 'colors';
 
 const router = Router();
 
 router.use((request, response, next) => {
-  const statusColor = response.statusCode === 200 ? '\x1b[36m' : '\x1b[31m';
+  const statusString = `(${response.statusCode})`;
+  const status = response.statusCode === 200 ? statusString.green : statusString.red;
 
-  const date = `\x1b[2m[${new Date().toISOString()}]\x1b[0m`;
-  const status = `${statusColor}(${response.statusCode})`;
-  const method = `\x1b[32m${request.method}\x1b[0m:`;
+  const method = request.method.blue;
   const url = request.originalUrl;
 
-  console.log(date, status, method, url);
+  log(`${status} ${method} ${url}`);
   next();
 });
 

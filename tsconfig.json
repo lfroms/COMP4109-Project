@@ -26,13 +26,8 @@
     "removeComments": true,
     "strictFunctionTypes": true,
     "rootDir": "src",
-    "baseUrl": ".",
+    "baseUrl": "src",
     "outDir": "public",
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    },
     "skipLibCheck": true,
     "noEmit": true,
     "moduleResolution": "node"
