@@ -2,22 +2,28 @@ import express from 'express';
 import next from 'next';
 import bodyParser from 'body-parser';
 
+import { ping } from './routes';
+import { logRequest } from './middleware';
+
 const dev = process.env.NODE_ENV !== 'production';
-const PORT = 3000;
+const PORT = process.env.PORT ?? 3000;
+
 const app = next({ dev });
-const handle = app.getRequestHandler();
+const requestHandler = app.getRequestHandler();
 
 app.prepare().then(() => {
   const server = express();
 
+  // Middleware
   server.use(bodyParser.json());
+  server.use(logRequest);
 
-  server.get('/api', (_req, res) => {
-    return res.json({ message: 'Hello, World!' });
-  });
+  // Routes
+  server.use(ping);
 
+  // Route everything else to NextJS frontend
   server.get('*', (req, res) => {
-    return handle(req, res);
+    return requestHandler(req, res);
   });
 
   server.listen(PORT, () => {
