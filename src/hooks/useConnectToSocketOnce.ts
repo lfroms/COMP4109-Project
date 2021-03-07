@@ -10,6 +10,12 @@ export default function useConnectToSocketOnce() {
   useEffect(() => {
     // Create a socket connection
     socketRef.current = socketIOClient(SOCKET_SERVER_URL);
+    setTimeout(() => {
+      socketRef.current?.emit('broadcast_message', 'hello from earth');
+    }, 2000);
+    socketRef.current.on('broadcast_message', (message: any) => {
+      console.log(message);
+    });
 
     // Disconnect from the socket
     return () => {
