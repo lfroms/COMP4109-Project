@@ -7,13 +7,15 @@ export default function Index() {
   const [chatID, setChatID] = useState('');
 
   const inputText = (
-    <input id="chatID" type="text" onChange={elem=>setChatID(elem.currentTarget.value)} value={chatID}/>
+    <input
+      id="chatID"
+      type="text"
+      onChange={elem=>setChatID(elem.currentTarget.value)}
+      value={chatID}/>
   );
 
   const joinButton = (
-    <button onClick={joinRoom}>
-      Join
-    </button>
+    <button onClick={joinRoom}>Join</button>
   );
 
   function joinRoom (){
@@ -24,9 +26,7 @@ export default function Index() {
     <div>
       <h1>Welcome to CryptoChat!</h1>
       <div>
-        <p>
-          Enter the room to join below:
-        </p>
+        <p>Enter the room to join below:</p>
         {inputText}
         {joinButton}
       </div>
