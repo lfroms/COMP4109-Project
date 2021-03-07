@@ -10,15 +10,14 @@ export default function Index() {
     <input
       id="chatID"
       type="text"
-      onChange={elem=>setChatID(elem.currentTarget.value)}
-      value={chatID}/>
+      onChange={elem => setChatID(elem.currentTarget.value)}
+      value={chatID}
+    />
   );
 
-  const joinButton = (
-    <button onClick={joinRoom}>Join</button>
-  );
+  const joinButton = (<button onClick={joinRoom}>Join</button>);
 
-  function joinRoom (){
+  function joinRoom() {
     setChatID('');
   }
 
