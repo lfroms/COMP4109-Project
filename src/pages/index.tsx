@@ -15,7 +15,7 @@ export default function Index() {
     />
   );
 
-  const joinButton = (<button onClick={joinRoom}>Join</button>);
+  const joinButton = <button onClick={joinRoom}>Join</button>;
 
   function joinRoom() {
     setChatID('');
