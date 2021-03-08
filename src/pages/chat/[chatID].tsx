@@ -10,7 +10,11 @@ export default function Chat() {
 
   const [count, setCount] = useState(3);
   const [message, setMessage] = useState('');
-  const [conversationText, updateConversation] = useState([{id: 1, data: 'Message 1'}, {id: 2, data: 'Message 2'}, {id: 3, data: 'Message 3'}]);
+  const [conversationText, updateConversation] = useState([
+    {id: 1, data: 'Message 1'},
+    {id: 2, data: 'Message 2'},
+    {id: 3, data: 'Message 3'}
+  ]);
 
   const messageInput = (
     <input
@@ -25,7 +29,7 @@ export default function Chat() {
   const sendButton = <button onClick={sendMessage}>Send</button>;
 
   function sendMessage() {
-    conversationText.push({id: count, data: message});
+    conversationText.push({ id: count, data: message });
     updateConversation(conversationText);
     setMessage('');
     setCount(count + 1);
