@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
 export default function Chat() {
-
   const router = useRouter();
   const { chatId } = router.query;
 
