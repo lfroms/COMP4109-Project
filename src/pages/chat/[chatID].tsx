@@ -11,9 +11,9 @@ export default function Chat() {
   const [count, setCount] = useState(3);
   const [message, setMessage] = useState('');
   const [conversationText, updateConversation] = useState([
-    {id: 1, data: 'Message 1'},
-    {id: 2, data: 'Message 2'},
-    {id: 3, data: 'Message 3'}
+    { id: 1, data: 'Message 1' },
+    { id: 2, data: 'Message 2' },
+    { id: 3, data: 'Message 3' }
   ]);
 
   const messageInput = (
