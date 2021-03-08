@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useConnectToSocketOnce } from 'hooks';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 export default function Chat() {
   useConnectToSocketOnce();
@@ -9,7 +9,7 @@ export default function Chat() {
   const { chatID } = router.query;
 
   const [message, setMessage] = useState('');
-  const [conversationText, updateConversation] = useState(["Message 1", "Message 2", "Message 3"]);
+  const [conversationText, updateConversation] = useState(['Message 1', 'Message 2', 'Message 3']);
 
   const messageInput = (
     <input
@@ -23,22 +23,20 @@ export default function Chat() {
 
   const sendButton = <button onClick={sendMessage}>Send</button>;
 
-  function sendMessage (){
+  function sendMessage() {
     conversationText.push(message);
     updateConversation(conversationText);
     setMessage('');
   }
 
   return (
-  <div>
-    <h1>Welcome to a Chatroom {chatID}!</h1>
-    <div id={"conversation" + {chatID}}>
-      {conversationText.map((text) =>
-        <p>{text}</p>
-      )}
+    <div>
+      <h1>Welcome to a Chatroom {chatID}!</h1>
+      <div id={"conversation" + { chatID }}>
+        {conversationText.map((text) => <p>{text}</p>)}
+      </div>
+      {messageInput}
+      {sendButton}
     </div>
-    {messageInput}
-    {sendButton}
-  </div>
   );
 }
