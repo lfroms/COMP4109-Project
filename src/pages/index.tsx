@@ -1,24 +1,36 @@
 import React, { useState } from 'react';
-import { useConnectToSocketOnce } from 'hooks';
+import { useJoinChat } from 'hooks';
+import { useRouter } from 'next/router';
 
 export default function Index() {
-  useConnectToSocketOnce();
+  const router = useRouter();
+  const [chatId, setChatID] = useState('');
+  const [userId, setUserId] = useState('');
+  const [sendRoomId, sendUserId] = useJoinChat();
 
-  const [chatID, setChatID] = useState('');
-
-  const inputText = (
+  const inputUserName = (
+    <input
+      id="userId"
+      type="text"
+      onChange={elem => setUserId(elem.currentTarget.value)}
+      value={userId}
+    />
+  );
+  const inputRoomName = (
     <input
       id="chatID"
       type="text"
       onChange={elem => setChatID(elem.currentTarget.value)}
-      value={chatID}
+      value={chatId}
     />
   );
 
   const joinButton = <button onClick={joinRoom}>Join</button>;
 
   function joinRoom() {
-    setChatID('');
+    sendRoomId(chatId);
+    sendUserId(userId);
+    router.push('/chat/' + chatId);
   }
 
   return (
@@ -26,7 +38,10 @@ export default function Index() {
       <h1>Welcome to CryptoChat!</h1>
       <div>
         <p>Enter the room to join below:</p>
-        {inputText}
+        username:
+        {inputUserName}
+        room:
+        {inputRoomName}
         {joinButton}
       </div>
     </div>

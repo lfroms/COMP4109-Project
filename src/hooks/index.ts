@@ -1,1 +1,1 @@
-export { default as useConnectToSocketOnce } from './useConnectToSocketOnce';
+export { default as useJoinChat } from './useJoinChat';
