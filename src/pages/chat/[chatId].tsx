@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import { useSendMessage } from 'hooks';
 
 export default function Chat() {
   const router = useRouter();
   const { chatId } = router.query;
-
   const [message, setMessage] = useState('');
+
   const [messages, setMessages] = useState([
     { data: 'Message 1' },
     { data: 'Message 2' },
     { data: 'Message 3' },
   ]);
+  const [sendNewMessage] = useSendMessage();
 
   const messageInput = (
     <input
@@ -25,8 +27,10 @@ export default function Chat() {
   const sendButton = <button onClick={sendMessage}>Send</button>;
 
   function sendMessage() {
+    const messageContent = { room: chatId, message: message };
     messages.push({ data: message });
     setMessages(messages);
+    sendNewMessage(messageContent);
     setMessage('');
   }
 
