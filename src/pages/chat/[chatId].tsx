@@ -10,10 +10,11 @@ interface Params extends NodeJS.Dict<string | string[]> {
 export default function Chat() {
   const router = useRouter();
   const joinConversation = useJoinChat();
-  const [messages, sendMessage] = useChat();
   const [currentMessageText, setCurrentMessageText] = useState('');
 
   const { chatId } = router.query as Params;
+
+  const [messages, sendMessage] = useChat(chatId);
 
   useEffect(() => {
     if (!router.isReady) {
@@ -24,7 +25,7 @@ export default function Chat() {
   }, [router.isReady]);
 
   function handleSendButtonClick() {
-    const message: Message = { text: currentMessageText, sender: '1', conversationId: chatId };
+    const message: Message = { text: currentMessageText };
 
     sendMessage(message);
     setCurrentMessageText('');
