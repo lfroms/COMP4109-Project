@@ -5,6 +5,7 @@ import { Message } from 'types';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   chatId: string;
+  userId: string;
 }
 
 export default function Chat() {
@@ -12,7 +13,7 @@ export default function Chat() {
   const joinConversation = useJoinChat();
   const [currentMessageText, setCurrentMessageText] = useState('');
 
-  const { chatId } = router.query as Params;
+  const { chatId, userId } = router.query as Params;
 
   const [messages, sendMessage] = useChat(chatId);
 
@@ -25,7 +26,7 @@ export default function Chat() {
   }, [router.isReady]);
 
   function handleSendButtonClick() {
-    const message: Message = { text: currentMessageText };
+    const message: Message = { text: currentMessageText, senderId: userId };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -36,7 +37,9 @@ export default function Chat() {
       <h1>Welcome to conversation {chatId}!</h1>
 
       {messages.map((message, index) => (
-        <p key={`message-${index}`}>{message.text}</p>
+        <p key={`message-${index}`}>
+          {message.senderId}: {message.text}
+        </p>
       ))}
 
       <input
