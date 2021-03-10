@@ -21,7 +21,7 @@ export default function Index() {
   const joinButton = <button onClick={joinRoom}>Join</button>;
 
   function joinRoom() {
-    router.push('/chat/' + conversationId);
+    router.push(`/chat/${conversationId}?userId=${userId}`);
   }
 
   return (
