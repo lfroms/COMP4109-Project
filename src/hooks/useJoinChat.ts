@@ -1,29 +1,12 @@
-import { useEffect, useRef } from 'react';
-import socketIOClient from 'socket.io-client';
-import { Socket } from 'socket.io-client';
-
-const SOCKET_SERVER_URL = 'http://localhost:3000';
+import { SocketEvent } from 'types';
+import useSocketContext from './useSocketContext';
 
 export default function useJoinChat() {
-  const socketRef = useRef<typeof Socket>();
+  const socket = useSocketContext();
 
-  function sendUserId(userName: string) {
-    socketRef.current?.emit('register_user', userName);
+  function joinConversation(conversationId: string) {
+    socket.emit(SocketEvent.JOIN_CONVERSATION, conversationId);
   }
 
-  function sendRoomId(chatId: string) {
-    socketRef.current?.emit('join_room', chatId);
-  }
-
-  useEffect(() => {
-    // Create a socket connection
-    socketRef.current = socketIOClient(SOCKET_SERVER_URL);
-
-    // Disconnect from the socket
-    return () => {
-      socketRef.current?.disconnect();
-    };
-  });
-
-  return [sendRoomId, sendUserId];
+  return joinConversation;
 }

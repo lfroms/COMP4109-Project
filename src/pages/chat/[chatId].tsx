@@ -1,47 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useSendMessage } from 'hooks';
+import { useChat, useJoinChat } from 'hooks';
+import { Message } from 'types';
+
+interface Params extends NodeJS.Dict<string | string[]> {
+  chatId: string;
+}
 
 export default function Chat() {
   const router = useRouter();
-  const { chatId } = router.query;
-  const [message, setMessage] = useState('');
+  const joinConversation = useJoinChat();
+  const [messages, sendMessage] = useChat();
+  const [currentMessageText, setCurrentMessageText] = useState('');
 
-  const [messages, setMessages] = useState([
-    { data: 'Message 1' },
-    { data: 'Message 2' },
-    { data: 'Message 3' },
-  ]);
-  const [sendNewMessage] = useSendMessage();
+  const { chatId } = router.query as Params;
 
-  const messageInput = (
-    <input
-      id="msgInput"
-      type="text"
-      onChange={elem => setMessage(elem.currentTarget.value)}
-      placeholder="Type a message..."
-      value={message}
-    />
-  );
+  useEffect(() => {
+    if (!router.isReady) {
+      return;
+    }
 
-  const sendButton = <button onClick={sendMessage}>Send</button>;
+    joinConversation(chatId);
+  }, [router.isReady]);
 
-  function sendMessage() {
-    const messageContent = { room: chatId, message: message };
-    messages.push({ data: message });
-    setMessages(messages);
-    sendNewMessage(messageContent);
-    setMessage('');
+  function handleSendButtonClick() {
+    const message: Message = { text: currentMessageText, sender: '1', conversationId: chatId };
+
+    sendMessage(message);
+    setCurrentMessageText('');
   }
 
   return (
     <div>
-      <h1>Welcome to a Chatroom {chatId}!</h1>
+      <h1>Welcome to conversation {chatId}!</h1>
+
       {messages.map((message, index) => (
-        <p key={`message-${index}`}>{message.data}</p>
+        <p key={`message-${index}`}>{message.text}</p>
       ))}
-      {messageInput}
-      {sendButton}
+
+      <input
+        id="msgInput"
+        type="text"
+        onChange={elem => setCurrentMessageText(elem.currentTarget.value)}
+        placeholder="Type a message..."
+        value={currentMessageText}
+      />
+      <button onClick={handleSendButtonClick}>Send</button>
     </div>
   );
 }

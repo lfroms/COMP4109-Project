@@ -1,16 +1,26 @@
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
+import { Message, SocketEvent } from '../../types';
+import { log } from '../../helpers';
 
 export default function joinRoom(io: Server) {
-  io.on('connection', socket => {
-    // let currentRoom: any | null = null;
-    socket.on('join_room', (chatId: string) => {
-      // currentRoom = io.sockets.adapter.rooms[chatId];
-      socket.join(chatId);
-      console.log('Room Name:' + chatId);
+  io.on('connection', (socket: Socket) => {
+    let currentRoom: string | null = null;
+
+    socket.on(SocketEvent.JOIN_CONVERSATION, (conversationId: string) => {
+      currentRoom = conversationId;
+      socket.join(conversationId);
+
+      log('Joined room');
     });
-    socket.on('broadcast_message', (data: any) => {
-      console.log(data);
-      socket.to(data.room).emit('broadcast_message', data.message);
+
+    socket.on(SocketEvent.MESSAGE, (message: Message) => {
+      if (!currentRoom) {
+        log('Attempted to send message without a room.', { severity: 'error' });
+
+        return;
+      }
+
+      io.sockets.in(currentRoom).emit(SocketEvent.MESSAGE, message);
     });
   });
 }

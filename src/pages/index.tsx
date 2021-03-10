@@ -1,36 +1,27 @@
 import React, { useState } from 'react';
-import { useJoinChat } from 'hooks';
 import { useRouter } from 'next/router';
 
 export default function Index() {
   const router = useRouter();
-  const [chatId, setChatID] = useState('');
+  const [conversationId, setConversationId] = useState('');
   const [userId, setUserId] = useState('');
-  const [sendRoomId, sendUserId] = useJoinChat();
 
   const inputUserName = (
-    <input
-      id="userId"
-      type="text"
-      onChange={elem => setUserId(elem.currentTarget.value)}
-      value={userId}
-    />
+    <input type="text" onChange={elem => setUserId(elem.currentTarget.value)} value={userId} />
   );
+
   const inputRoomName = (
     <input
-      id="chatID"
       type="text"
-      onChange={elem => setChatID(elem.currentTarget.value)}
-      value={chatId}
+      onChange={elem => setConversationId(elem.currentTarget.value)}
+      value={conversationId}
     />
   );
 
   const joinButton = <button onClick={joinRoom}>Join</button>;
 
   function joinRoom() {
-    sendRoomId(chatId);
-    sendUserId(userId);
-    router.push('/chat/' + chatId);
+    router.push('/chat/' + conversationId);
   }
 
   return (
