@@ -1,4 +1,4 @@
 export default interface Message {
-  text: string;
   senderId: string;
+  data: string;
 }

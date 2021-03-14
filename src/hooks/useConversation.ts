@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Message, SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
-export default function useChat(conversationId: string): [Message[], (m: Message) => void] {
+export default function useConversation(conversationId: string): [Message[], (m: Message) => void] {
   const socket = useSocketContext();
 
   const [messages, setMessages] = useState<Message[]>([]);
