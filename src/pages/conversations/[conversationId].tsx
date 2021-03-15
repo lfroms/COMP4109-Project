@@ -1,32 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useChat, useJoinChat } from 'hooks';
+import { useConversation } from 'hooks';
 import { Message } from 'types';
 
 interface Params extends NodeJS.Dict<string | string[]> {
-  chatId: string;
-  userId: string;
+  conversationId: string;
+  userId: string; // TODO: Remove this once we can fetch this from the session.
 }
 
 export default function Chat() {
   const router = useRouter();
-  const joinConversation = useJoinChat();
   const [currentMessageText, setCurrentMessageText] = useState('');
+  const { conversationId, userId } = router.query as Params;
 
-  const { chatId, userId } = router.query as Params;
-
-  const [messages, sendMessage] = useChat(chatId);
-
-  useEffect(() => {
-    if (!router.isReady) {
-      return;
-    }
-
-    joinConversation(chatId);
-  }, [router.isReady]);
+  const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: Message = { text: currentMessageText, senderId: userId };
+    const message: Message = { data: currentMessageText, senderId: userId };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -34,11 +24,11 @@ export default function Chat() {
 
   return (
     <div>
-      <h1>Welcome to conversation {chatId}!</h1>
+      <h1>Conversation {conversationId}</h1>
 
       {messages.map((message, index) => (
         <p key={`message-${index}`}>
-          {message.senderId}: {message.text}
+          {message.senderId}: {message.data}
         </p>
       ))}
 

@@ -1,1 +1,1 @@
-export { default as joinConversation } from './joinConversation';
+export { default as createConversation } from './createConversation';

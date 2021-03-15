@@ -1,3 +1,3 @@
-export { default as useChat } from './useChat';
-export { default as useJoinChat } from './useJoinChat';
+export { default as useConversation } from './useConversation';
+export { default as useCreateConversation } from './useCreateConversation';
 export { default as useSocketContext } from './useSocketContext';
