@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation } from 'hooks';
 import { Message } from 'types';
+import { SymmetricEncryptionService } from 'services';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -21,6 +22,24 @@ export default function Chat() {
     sendMessage(message);
     setCurrentMessageText('');
   }
+
+  useEffect(() => {
+    async function printPlaintext() {
+      const key = await SymmetricEncryptionService.generateKey();
+      const encryptionService = new SymmetricEncryptionService(key);
+
+      try {
+        const payload = await encryptionService.encrypt(currentMessageText);
+        const decryptedPlaintext = await encryptionService.decrypt(payload);
+
+        console.log(payload, decryptedPlaintext, key);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    printPlaintext();
+  }, [currentMessageText]);
 
   return (
     <div>
