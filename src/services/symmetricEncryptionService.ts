@@ -60,8 +60,8 @@ export default class SymmetricEncryptionService {
     return window.crypto.subtle.exportKey('jwk', key);
   }
 
-  private async convertJsonWebKeyToCryptoKey(keyData: JsonWebKey) {
-    return await window.crypto.subtle.importKey(
+  private convertJsonWebKeyToCryptoKey(keyData: JsonWebKey) {
+    return window.crypto.subtle.importKey(
       'jwk',
       keyData,
       {
