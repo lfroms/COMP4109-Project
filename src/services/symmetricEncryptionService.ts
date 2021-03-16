@@ -1,4 +1,4 @@
-import { decode as Base64Decode, encode as Base64Encode } from 'base64-arraybuffer';
+import Base64 from 'base64-arraybuffer';
 
 interface EncryptedPayload {
   m: string;
@@ -74,10 +74,10 @@ export default class SymmetricEncryptionService {
   }
 
   private arrayBufferToString(buffer: ArrayBuffer): string {
-    return Base64Encode(buffer);
+    return Base64.encode(buffer);
   }
 
   private stringToArrayBuffer(string: string): ArrayBuffer {
-    return Base64Decode(string);
+    return Base64.decode(string);
   }
 }
