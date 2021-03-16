@@ -47,14 +47,8 @@ export default class SymmetricEncryptionService {
     return textDecoder.decode(plaintext);
   }
 
-  public static async generateSymmetricKey() {
-    const key = await this.generateAESKey();
-
-    return window.crypto.subtle.exportKey('jwk', key);
-  }
-
-  private static generateAESKey() {
-    return window.crypto.subtle.generateKey(
+  public static async generateKey() {
+    const key = await window.crypto.subtle.generateKey(
       {
         name: 'AES-CBC',
         length: 256,
@@ -62,6 +56,8 @@ export default class SymmetricEncryptionService {
       true,
       ['encrypt', 'decrypt']
     );
+
+    return window.crypto.subtle.exportKey('jwk', key);
   }
 
   private async convertJsonWebKeyToCryptoKey(keyData: JsonWebKey) {

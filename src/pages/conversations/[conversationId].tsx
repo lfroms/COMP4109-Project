@@ -25,7 +25,7 @@ export default function Chat() {
 
   useEffect(() => {
     async function printPlaintext() {
-      const key = await SymmetricEncryptionService.generateSymmetricKey();
+      const key = await SymmetricEncryptionService.generateKey();
       const encryptionService = new SymmetricEncryptionService(key);
 
       try {
