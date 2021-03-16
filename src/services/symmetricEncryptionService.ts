@@ -1,7 +1,7 @@
 import { decode as Base64Decode, encode as Base64Encode } from 'base64-arraybuffer';
 
 interface EncryptedPayload {
-  ciphertext: string;
+  m: string;
   iv: string;
 }
 
@@ -26,13 +26,13 @@ export default class SymmetricEncryptionService {
     );
 
     return {
-      ciphertext: this.arrayBufferToString(ciphertext),
+      m: this.arrayBufferToString(ciphertext),
       iv: this.arrayBufferToString(iv),
     };
   }
 
   public async decrypt(encryptedPayload: EncryptedPayload) {
-    const { ciphertext, iv } = encryptedPayload;
+    const { m, iv } = encryptedPayload;
     const textDecoder = new TextDecoder();
 
     const plaintext = await window.crypto.subtle.decrypt(
@@ -41,7 +41,7 @@ export default class SymmetricEncryptionService {
         iv: this.stringToArrayBuffer(iv),
       },
       await this.convertJsonWebKeyToCryptoKey(this.key),
-      this.stringToArrayBuffer(ciphertext)
+      this.stringToArrayBuffer(m)
     );
 
     return textDecoder.decode(plaintext);
