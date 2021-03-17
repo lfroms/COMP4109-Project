@@ -1,14 +1,15 @@
-import Base64 from 'base64-arraybuffer';
+import { BaseEncryptionService } from './base';
 
 interface EncryptedPayload {
   m: string;
   iv: string;
 }
 
-export default class SymmetricEncryptionService {
+export default class SymmetricEncryptionService extends BaseEncryptionService {
   private key: JsonWebKey;
 
   constructor(key: JsonWebKey) {
+    super();
     this.key = key;
   }
 
@@ -71,13 +72,5 @@ export default class SymmetricEncryptionService {
       true,
       ['encrypt', 'decrypt']
     );
-  }
-
-  private arrayBufferToString(buffer: ArrayBuffer): string {
-    return Base64.encode(buffer);
-  }
-
-  private stringToArrayBuffer(string: string): ArrayBuffer {
-    return Base64.decode(string);
   }
 }
