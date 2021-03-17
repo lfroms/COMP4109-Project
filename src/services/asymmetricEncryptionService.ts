@@ -1,3 +1,4 @@
+import Base64 from 'base64-arraybuffer';
 import { BaseEncryptionService } from './base';
 
 export default class AsymmetricEncryptionService extends BaseEncryptionService {
@@ -39,6 +40,27 @@ export default class AsymmetricEncryptionService extends BaseEncryptionService {
       },
       true,
       ['encrypt', 'decrypt']
+    );
+  }
+
+  public static async convertPublicKeyToString(publicKey: CryptoKey) {
+    const key = await window.crypto.subtle.exportKey('spki', publicKey);
+
+    return Base64.encode(key);
+  }
+
+  public static convertStringToPublicKey(string: string) {
+    const arrayBuffer = Base64.decode(string);
+
+    return window.crypto.subtle.importKey(
+      'spki',
+      arrayBuffer,
+      {
+        name: 'RSA-OAEP',
+        hash: 'SHA-256',
+      },
+      true,
+      ['encrypt']
     );
   }
 }
