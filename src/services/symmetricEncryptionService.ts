@@ -1,14 +1,15 @@
-import Base64 from 'base64-arraybuffer';
+import { BaseEncryptionService } from './base';
 
 interface EncryptedPayload {
   m: string;
   iv: string;
 }
 
-export default class SymmetricEncryptionService {
-  private key: JsonWebKey;
+export default class SymmetricEncryptionService extends BaseEncryptionService {
+  private key: CryptoKey;
 
-  constructor(key: JsonWebKey) {
+  constructor(key: CryptoKey) {
+    super();
     this.key = key;
   }
 
@@ -21,7 +22,7 @@ export default class SymmetricEncryptionService {
         name: 'AES-CBC',
         iv,
       },
-      await this.convertJsonWebKeyToCryptoKey(this.key),
+      this.key,
       textEncoder.encode(plaintext)
     );
 
@@ -40,15 +41,15 @@ export default class SymmetricEncryptionService {
         name: 'AES-CBC',
         iv: this.stringToArrayBuffer(iv),
       },
-      await this.convertJsonWebKeyToCryptoKey(this.key),
+      this.key,
       this.stringToArrayBuffer(m)
     );
 
     return textDecoder.decode(plaintext);
   }
 
-  public static async generateKey() {
-    const key = await window.crypto.subtle.generateKey(
+  public static generateKey() {
+    return window.crypto.subtle.generateKey(
       {
         name: 'AES-CBC',
         length: 256,
@@ -56,14 +57,16 @@ export default class SymmetricEncryptionService {
       true,
       ['encrypt', 'decrypt']
     );
-
-    return window.crypto.subtle.exportKey('jwk', key);
   }
 
-  private convertJsonWebKeyToCryptoKey(keyData: JsonWebKey) {
+  public exportJsonWebKey() {
+    return window.crypto.subtle.exportKey('jwk', this.key);
+  }
+
+  public static createCryptoKeyFromJsonWebKey(jsonWebKey: JsonWebKey) {
     return window.crypto.subtle.importKey(
       'jwk',
-      keyData,
+      jsonWebKey,
       {
         name: 'AES-CBC',
         length: 256,
@@ -71,13 +74,5 @@ export default class SymmetricEncryptionService {
       true,
       ['encrypt', 'decrypt']
     );
-  }
-
-  private arrayBufferToString(buffer: ArrayBuffer): string {
-    return Base64.encode(buffer);
-  }
-
-  private stringToArrayBuffer(string: string): ArrayBuffer {
-    return Base64.decode(string);
   }
 }
