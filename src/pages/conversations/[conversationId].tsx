@@ -32,7 +32,8 @@ export default function Chat() {
         const payload = await encryptionService.encrypt(currentMessageText);
         const decryptedPlaintext = await encryptionService.decrypt(payload);
 
-        console.log(payload, decryptedPlaintext, key);
+        const exportedKey = await encryptionService.exportJsonWebKey();
+        console.log(payload, decryptedPlaintext, exportedKey);
       } catch (e) {
         console.error(e);
       }
