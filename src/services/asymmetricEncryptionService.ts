@@ -30,7 +30,7 @@ export default class AsymmetricEncryptionService extends BaseEncryptionService {
     return textDecoder.decode(plaintext);
   }
 
-  public static async generateKeyPair() {
+  public static generateKeyPair() {
     return window.crypto.subtle.generateKey(
       {
         name: 'RSA-OAEP',

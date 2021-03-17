@@ -63,7 +63,7 @@ export default class SymmetricEncryptionService extends BaseEncryptionService {
     return window.crypto.subtle.exportKey('jwk', this.key);
   }
 
-  public static async createCryptoKeyFromJsonWebKey(jsonWebKey: JsonWebKey) {
+  public static createCryptoKeyFromJsonWebKey(jsonWebKey: JsonWebKey) {
     return window.crypto.subtle.importKey(
       'jwk',
       jsonWebKey,
