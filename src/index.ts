@@ -3,6 +3,8 @@ import next from 'next';
 import bodyParser from 'body-parser';
 import { Server } from 'http';
 
+import 'reflect-metadata';
+
 import { ping } from './routes';
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
