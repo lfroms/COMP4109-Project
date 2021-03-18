@@ -11,7 +11,8 @@
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "start:dev": "nodemon src/index.ts -i src/pages -i src/components -i src/hooks -i src/services",
-    "start:prod": "NODE_ENV=production node public/index.js"
+    "start:prod": "NODE_ENV=production node public/index.js",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
@@ -19,7 +20,6 @@
     "colors": "^1.4.0",
     "express": "^4.17.1",
     "next": "^10.0.7",
-    "pg": "^8.5.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "reflect-metadata": "^0.1.13",
