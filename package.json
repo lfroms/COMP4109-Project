@@ -11,7 +11,8 @@
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
     "start:dev": "nodemon src/index.ts -i src/pages -i src/components -i src/hooks -i src/services",
-    "start:prod": "NODE_ENV=production node public/index.js"
+    "start:prod": "NODE_ENV=production node public/index.js",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "base64-arraybuffer": "^0.2.0",
@@ -21,8 +22,10 @@
     "next": "^10.0.7",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "reflect-metadata": "^0.1.13",
     "socket.io": "^3.1.2",
-    "socket.io-client": "^3.1.2"
+    "socket.io-client": "^3.1.2",
+    "typeorm": "^0.2.31"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.0",
