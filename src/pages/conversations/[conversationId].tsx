@@ -8,7 +8,7 @@ interface Params extends NodeJS.Dict<string | string[]> {
   userId: string; // TODO: Remove this once we can fetch this from the session.
 }
 
-export default function Chat(){
+export default function Chat() {
   const router = useRouter();
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId, userId } = router.query as Params;
@@ -29,8 +29,11 @@ export default function Chat(){
 
       try {
         const payload = await encryptionService.encrypt(currentMessageText);
+        const decryptedPlaintext = await encryptionService.decrypt(payload);
         console.log(payload);
 
+        const exportedKey = await encryptionService.exportJsonWebKey();
+        console.log(payload, decryptedPlaintext, exportedKey);
       } catch (e) {
         console.error(e);
       }
