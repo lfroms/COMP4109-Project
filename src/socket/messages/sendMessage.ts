@@ -18,6 +18,6 @@ export default function sendMessage(io: Server, socket: Socket) {
     message.content = messagePayload.data;
     message.save();
 
-    io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, message);
+    io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, messagePayload);
   });
 }
