@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCreateConversation, useSocketContext } from 'hooks';
+import { useCreateConversation } from 'hooks';
 
 export default function Index() {
-  const socket = useSocketContext();
   const router = useRouter();
   const createConversation = useCreateConversation();
   const [conversationId, setConversationId] = useState('');
@@ -23,12 +22,9 @@ export default function Index() {
 
   const joinButton = <button onClick={joinRoom}>Join</button>;
 
-  function joinRoom() {
-    createConversation({ participantIds: [userId] });
-
-    socket.on('conversationId', (conversationId: string) => {
-      router.push(`/conversations/${conversationId}?userId=${userId}`);
-    });
+  async function joinRoom() {
+    const conversationId = await createConversation({ participantIds: [userId] });
+    router.push(`/conversations/${conversationId}?userId=${userId}`);
   }
 
   return (
