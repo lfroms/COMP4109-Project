@@ -16,7 +16,7 @@ export default function Chat() {
   const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: MessagePayload = { senderId: userId, data: currentMessageText};
+    const message: MessagePayload = { senderId: userId, data: currentMessageText };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -31,7 +31,6 @@ export default function Chat() {
         const payload = await encryptionService.encrypt(currentMessageText);
         const decryptedPlaintext = await encryptionService.decrypt(payload);
         console.log(payload);
-
         const exportedKey = await encryptionService.exportJsonWebKey();
         console.log(payload, decryptedPlaintext, exportedKey);
       } catch (e) {

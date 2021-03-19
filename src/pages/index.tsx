@@ -27,7 +27,7 @@ export default function Index() {
   function joinRoom() {
     createConversation({ participantIds: [userId] });
 
-    socket.on("conversationId", (conversationId: string) => {
+    socket.on('conversationId', (conversationId: string) => {
       router.push(`/conversations/${conversationId}?userId=${userId}`);
     });
   }

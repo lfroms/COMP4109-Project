@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import { SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
-export default function useConversation(conversationId: string): [MessagePayload[], (m: MessagePayload) => void] {
+export default function useConversation(
+  conversationId: string
+  ): [MessagePayload[], (m: MessagePayload) => void] {
   const socket = useSocketContext();
 
   const [messages, setMessages] = useState<MessagePayload[]>([]);
