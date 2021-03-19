@@ -1,4 +1,3 @@
-//import { useConversation } from 'hooks';
 import { Conversation } from '../../models/Conversation';
 import { Server, Socket } from 'socket.io';
 import { ConversationCreatePayload, SocketEvent } from '../../types';
@@ -11,13 +10,10 @@ export default function createConversation(_io: Server, socket: Socket) {
     const conversation = new Conversation();
     conversation.participants = [];
     conversation.messages = [];
-    conversation.save();
+    await conversation.save();
 
-    const addedConversation = await Conversation.find({ order: { id: 'DESC' }, take: 1 });
-    const conversationId = addedConversation[0].id.toString();
-
-    socket.join(conversationId);
-    socket.emit('conversationId', conversationId);
+    socket.join(conversation.id.toString());
+    socket.emit('conversationId', conversation.id);
 
     // TODO: Join all participants to the conversation.
   });

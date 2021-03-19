@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCreateConversation, useSocketContext } from 'hooks';
-//import { Socket } from 'socket.io-client';
 
 export default function Index() {
   const socket = useSocketContext();

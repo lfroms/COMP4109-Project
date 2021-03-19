@@ -10,12 +10,13 @@ interface MessagePayload {
 
 export default function sendMessage(io: Server, socket: Socket) {
   socket.on(SocketEvent.MESSAGE, async (messagePayload: MessagePayload, conversationId: string) => {
-    const conversation = await Conversation.find({ where: { id: conversationId } });
+    const conversation = await Conversation.findOne(conversationId);
+    if (!conversation) { return; }
 
     const message = new Message();
-    message.conversation = conversation[0];
+    message.conversation = conversation;
     message.content = messagePayload.data;
-    message.save();
+    await message.save();
 
     io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, messagePayload);
   });
