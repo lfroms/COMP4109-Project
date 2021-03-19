@@ -9,8 +9,7 @@ export default function useCreateConversation() {
       socket.emit(SocketEvent.CREATE_CONVERSATION, payload, (conversationId: number) => {
         resolve(conversationId);
       });
-    })
-
+    });
   }
 
   return createConversation;

@@ -3,11 +3,6 @@ import { Message } from '../../models/Message';
 import { Conversation } from '../../models/Conversation';
 import { SocketEvent } from '../../types';
 
-interface MessagePayload {
-  senderId: string;
-  data: string;
-}
-
 export default function sendMessage(io: Server, socket: Socket) {
   socket.on(SocketEvent.MESSAGE, async (messagePayload: MessagePayload, conversationId: string) => {
     const conversation = await Conversation.findOne(conversationId);
