@@ -5,7 +5,7 @@ export default function useCreateConversation() {
   const socket = useSocketContext();
 
   function createConversation(payload: ConversationCreatePayload) {
-    return new Promise((resolve, _reject) => {
+    return new Promise((resolve) => {
       socket.emit(SocketEvent.CREATE_CONVERSATION, payload, (conversationId: number) => {
         resolve(conversationId);
       });

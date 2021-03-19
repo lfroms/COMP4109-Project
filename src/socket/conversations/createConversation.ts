@@ -18,5 +18,6 @@ export default function createConversation(_io: Server, socket: Socket) {
 
       callback(conversation.id);
       // TODO: Join all participants to the conversation.
-    });
-  }
+
+  });
+}
