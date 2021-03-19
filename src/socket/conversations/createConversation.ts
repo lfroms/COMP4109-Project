@@ -13,7 +13,6 @@ export default function createConversation(_io: Server, socket: Socket) {
     await conversation.save();
 
     socket.join(conversation.id.toString());
-    socket.emit('conversationId', conversation.id);
 
     callback(conversation.id);
     // TODO: Join all participants to the conversation.
