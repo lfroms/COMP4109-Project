@@ -4,7 +4,7 @@ import useSocketContext from './useSocketContext';
 
 export default function useConversation(
   conversationId: string
-  ): [MessagePayload[], (m: MessagePayload) => void] {
+): [MessagePayload[], (m: MessagePayload) => void] {
   const socket = useSocketContext();
 
   const [messages, setMessages] = useState<MessagePayload[]>([]);

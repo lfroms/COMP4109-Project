@@ -13,7 +13,7 @@ export default function createConversation(_io: Server, socket: Socket) {
     conversation.messages = [];
     conversation.save();
 
-    const addedConversation = await Conversation.find({ order: { id: 'DESC' }, take: 1});
+    const addedConversation = await Conversation.find({ order: { id: 'DESC' }, take: 1 });
     const conversationId = addedConversation[0].id.toString();
 
     socket.join(conversationId);

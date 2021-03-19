@@ -11,7 +11,7 @@ interface MessagePayload {
 export default function sendMessage(io: Server, socket: Socket) {
   socket.on(SocketEvent.MESSAGE, async (messagePayload: MessagePayload, conversationId: string) => {
 
-    const conversation = await Conversation.find({ where : { id: conversationId } });
+    const conversation = await Conversation.find({ where: { id: conversationId } });
 
     const message = new Message();
     message.conversation = conversation[0];
