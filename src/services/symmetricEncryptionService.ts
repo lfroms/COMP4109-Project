@@ -1,10 +1,5 @@
 import { BaseEncryptionService } from './base';
 
-interface EncryptedPayload {
-  m: string;
-  iv: string;
-}
-
 export default class SymmetricEncryptionService extends BaseEncryptionService {
   private key: CryptoKey;
 
