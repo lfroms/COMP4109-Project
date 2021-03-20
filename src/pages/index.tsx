@@ -33,10 +33,14 @@ export default function Index() {
       convertPrivateKeyToString,
       cryptoKeyPair.publicKey
     );
+    const publicKeyToString = await AsymmetricEncryptionService.convertPublicKeyToString(
+      cryptoKeyPair.publicKey
+    );
 
     const conversationId = await createConversation({
       participantIds: [userId],
       personalConversationKey: encryptedMessageKey,
+      publicEncryptionKey: publicKeyToString,
     });
 
     router.push(`/conversations/${conversationId}?userId=${userId}`);
