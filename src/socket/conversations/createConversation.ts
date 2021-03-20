@@ -1,6 +1,8 @@
 import { Conversation } from '../../models/Conversation';
 import { Server, Socket } from 'socket.io';
 import { ConversationCreatePayload, SocketEvent } from '../../types';
+import { PersonalConversationKey } from '../../models/PersonalConversationKey';
+import { User } from '../../models/User';
 
 export default function createConversation(_io: Server, socket: Socket) {
   socket.on(
@@ -13,6 +15,19 @@ export default function createConversation(_io: Server, socket: Socket) {
       conversation.participants = [];
       conversation.messages = [];
       await conversation.save();
+      //created one user
+      const userExample = new User();
+      userExample.conversations = [conversation];
+      userExample.name = 'khaled';
+      userExample.password = '4109';
+      userExample.publicKey = payload.publicEncryptionKey;
+      await userExample.save();
+      //created one PCK
+      const personalConversationKey = new PersonalConversationKey();
+      personalConversationKey.conversation = conversation;
+      personalConversationKey.user = userExample;
+      personalConversationKey.value = payload.personalConversationKey;
+      await personalConversationKey.save();
 
       socket.join(conversation.id.toString());
 
