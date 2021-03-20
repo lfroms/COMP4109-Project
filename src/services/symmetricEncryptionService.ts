@@ -1,4 +1,5 @@
 import { BaseEncryptionService } from './base';
+/*import Base64 from 'base64-arraybuffer';*/
 
 export default class SymmetricEncryptionService extends BaseEncryptionService {
   private key: CryptoKey;
@@ -56,6 +57,12 @@ export default class SymmetricEncryptionService extends BaseEncryptionService {
 
   public exportJsonWebKey() {
     return window.crypto.subtle.exportKey('jwk', this.key);
+  }
+
+  public async exportKeyToString() {
+    const key = await window.crypto.subtle.exportKey('raw', this.key);
+
+    return this.arrayBufferToString(key);
   }
 
   public static createCryptoKeyFromJsonWebKey(jsonWebKey: JsonWebKey) {
