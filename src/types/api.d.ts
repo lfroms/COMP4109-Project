@@ -4,10 +4,14 @@ interface ConversationData {
   messages: Message[];
 }
 
-interface MessageData {
-
+interface UserConversationData {
+  id: number;
+  name: string;
+  conversations: Conversation[];
 }
 
-interface UserData {
-
+interface PersonalConversationKeyData {
+  userId: number;
+  conversationId: number;
+  value: string;
 }
