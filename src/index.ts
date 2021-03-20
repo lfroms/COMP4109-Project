@@ -8,6 +8,7 @@ import 'reflect-metadata';
 
 import { ping } from './routes';
 import { conversations } from './routes';
+import { personalConversationKey } from './routes';
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
 
@@ -30,6 +31,7 @@ app
     // Routes
     server.use(ping);
     server.use(conversations);
+    server.use(personalConversationKey);
 
     // Route everything else to NextJS frontend
     server.get('*', (req, res) => {

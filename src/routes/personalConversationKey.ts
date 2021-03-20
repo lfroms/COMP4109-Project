@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PersonalConversationKey } from 'models/PersonalConversationKey';
+import { PersonalConversationKey } from '../models/PersonalConversationKey';
 
 const router = Router();
 
