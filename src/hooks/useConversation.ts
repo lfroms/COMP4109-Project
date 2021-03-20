@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Message, SocketEvent } from 'types';
+import { SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
-export default function useConversation(conversationId: string): [Message[], (m: Message) => void] {
+export default function useConversation(
+  conversationId: string
+): [MessagePayload[], (m: MessagePayload) => void] {
   const socket = useSocketContext();
 
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessagePayload[]>([]);
 
   useEffect(() => {
-    socket.on(SocketEvent.MESSAGE, (message: Message) => {
+    socket.on(SocketEvent.MESSAGE, (message: MessagePayload) => {
       setMessages(previousMessages => [...previousMessages, message]);
     });
   }, []);
 
-  function sendMessage(message: Message) {
+  function sendMessage(message: MessagePayload) {
     socket.emit(SocketEvent.MESSAGE, message, conversationId);
   }
 

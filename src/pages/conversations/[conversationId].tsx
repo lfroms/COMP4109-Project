@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation } from 'hooks';
-import { Message } from 'types';
 import { SymmetricEncryptionService } from 'services';
 
 interface Params extends NodeJS.Dict<string | string[]> {
@@ -17,7 +16,7 @@ export default function Chat() {
   const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: Message = { data: currentMessageText, senderId: userId };
+    const message: MessagePayload = { senderId: userId, data: currentMessageText };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -31,7 +30,7 @@ export default function Chat() {
       try {
         const payload = await encryptionService.encrypt(currentMessageText);
         const decryptedPlaintext = await encryptionService.decrypt(payload);
-
+        console.log(payload);
         const exportedKey = await encryptionService.exportJsonWebKey();
         console.log(payload, decryptedPlaintext, exportedKey);
       } catch (e) {

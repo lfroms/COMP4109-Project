@@ -1,13 +1,23 @@
+import { Conversation } from '../../models/Conversation';
 import { Server, Socket } from 'socket.io';
 import { ConversationCreatePayload, SocketEvent } from '../../types';
 
 export default function createConversation(_io: Server, socket: Socket) {
-  socket.on(SocketEvent.CREATE_CONVERSATION, (payload: ConversationCreatePayload) => {
-    // TODO: Create the conversation in the database and retrieve id.
+  socket.on(
+    SocketEvent.CREATE_CONVERSATION,
+    async (payload: ConversationCreatePayload, callback) => {
+      // TODO: Add users to conversation using payload info
+      console.log(payload);
 
-    // TODO: Replace `id` below with record id from database.
-    socket.join(payload.id);
+      const conversation = new Conversation();
+      conversation.participants = [];
+      conversation.messages = [];
+      await conversation.save();
 
-    // TODO: Join all participants to the conversation.
-  });
+      socket.join(conversation.id.toString());
+
+      callback(conversation.id);
+      // TODO: Join all participants to the conversation.
+    }
+  );
 }
