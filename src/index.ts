@@ -7,6 +7,7 @@ import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
 import { ping } from './routes';
+import { conversations } from './routes';
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
 
@@ -28,6 +29,7 @@ app
 
     // Routes
     server.use(ping);
+    server.use(conversations);
 
     // Route everything else to NextJS frontend
     server.get('*', (req, res) => {
