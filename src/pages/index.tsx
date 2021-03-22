@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useKeyStore, useRegistration } from 'hooks';
+import { useKeyStore, useRegistration, useSessionStorage } from 'hooks';
 import { StorageKey } from 'types';
 import { AsymmetricEncryptionService, PrivateKeyTransportService } from 'services';
 
 export default function Index() {
   const router = useRouter();
   const register = useRegistration();
-  const [userName, setUserName] = useState('');
-  const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY, undefined);
+  const [userId, setUserId] = useState('');
+  const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
+  const { set: setUserIdInSessionStorage } = useSessionStorage(StorageKey.USER_ID);
   const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
   function handleLogin() {
     setPrivateKey(pemContents);
+    setUserIdInSessionStorage(userId);
     // TODO: Further login implementation.
-    router.push(`/conversations/?userId=${userName}`);
+    router.push('/conversations');
   }
 
   function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
@@ -38,7 +40,7 @@ export default function Index() {
     const keyPair = await AsymmetricEncryptionService.generateKeyPair();
     const publicKey = await AsymmetricEncryptionService.convertPublicKeyToString(keyPair.publicKey);
 
-    const { data, error } = await register({ name: userName, password: 'test', publicKey });
+    const { data, error } = await register({ name: userId, password: 'test', publicKey });
 
     if (!data || error) {
       console.error('An error occured while trying to register.', error);
@@ -63,8 +65,8 @@ export default function Index() {
           <label>user id (from db):</label>
           <input
             type="text"
-            onChange={elem => setUserName(elem.currentTarget.value)}
-            value={userName}
+            onChange={elem => setUserId(elem.currentTarget.value)}
+            value={userId}
           />
           <br />
           <label>private key (pem):</label>

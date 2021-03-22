@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useConversation } from 'hooks';
+import { useConversation, useSessionStorage } from 'hooks';
+import { StorageKey } from 'types';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
-  userId: string; // TODO: Remove this once we can fetch this from the session.
 }
 
 export default function Conversation() {
   const router = useRouter();
+  const { value: userId } = useSessionStorage(StorageKey.USER_ID);
   const [currentMessageText, setCurrentMessageText] = useState('');
-  const { conversationId, userId } = router.query as Params;
+  const { conversationId } = router.query as Params;
 
   const [messages, sendMessage] = useConversation(conversationId);
 
