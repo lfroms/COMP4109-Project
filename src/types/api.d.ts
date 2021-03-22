@@ -1,42 +1,41 @@
 namespace API {
-
-  interface JSONError {
+  export interface JSONError {
     code: number;
     message: string;
   }
 
-  interface JSONResponse<T> {
+  export interface JSONResponse<T> {
     data: T | null;
     error: JSONError | null;
   }
 
-  interface User {
+  export interface User {
     // to do
   }
 
-  interface Message {
+  export interface Message {
     // to do
   }
 
-  interface Conversation {
+  export interface Conversation {
     id: number;
     participants: User[];
     messages: Message[];
   }
 
-  interface PersonalConversationKey {
+  export interface PersonalConversationKey {
     key: string;
   }
 
-  interface ConversationResponse {
+  export interface ConversationResponse {
     conversation: Conversation;
   }
 
-  interface UserConversationResponse {
+  export interface UserConversationResponse {
     conversations: Conversation[];
   }
 
-  interface PersonalConversationKeyResponse {
+  export interface PersonalConversationKeyResponse {
     personalConversationKey: PersonalConversationKey;
   }
 }

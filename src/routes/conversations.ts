@@ -6,13 +6,19 @@ const router = Router();
 
 router.get('/api/conversations/:id', async (request, response) => {
   const conversationId = parseInt(request.params.id);
-  const queryResult = await Conversation.findOne(conversationId, { relations: ['messages', 'participants'] });
+  const queryResult = await Conversation.findOne(conversationId, {
+    relations: ['messages', 'participants'],
+  });
 
   if (!queryResult) {
     const res: API.JSONResponse<API.ConversationResponse> = {
       data: null,
-      error: {code: 404, message: "Could not find conversation with that id"},
-    }
+      error: {
+        code: 404,
+        message: 'Could not find conversation with that id',
+      },
+    };
+
     return response.status(404).json(res);
   }
 
@@ -23,7 +29,7 @@ router.get('/api/conversations/:id', async (request, response) => {
   const res: API.JSONResponse<API.ConversationResponse> = {
     data: conversation,
     error: null,
-  }
+  };
 
   return response.json(res);
 });
@@ -33,28 +39,38 @@ router.get('/api/conversations', async (request, response) => {
   if (!userId) {
     const res: API.JSONResponse<API.UserConversationResponse> = {
       data: null,
-      error: {code: 404, message: "Invalid query parameters"},
-    }
+      error: {
+        code: 404,
+        message: 'Invalid query parameters',
+      },
+    };
+
     return response.status(404).json(res);
   }
 
-  const userData = await User.findOne(userId, { relations: ['conversations'] });
+  const userData = await User.findOne(userId, {
+    relations: ['conversations']
+  });
   if (!userData) {
     const res: API.JSONResponse<API.UserConversationResponse> = {
       data: null,
-      error: {code: 404, message: "Could not find user with that id"},
-    }
+      error: {
+        code: 404,
+        message: 'Could not find user with that id',
+      },
+    };
+
     return response.status(404).json(res);
   }
 
   const conversations: API.UserConversationResponse = {
     conversations: userData.conversations,
-  }
+  };
 
   const res: API.JSONResponse<API.UserConversationResponse> = {
     data: conversations,
     error: null,
-  }
+  };
 
   return response.json(res);
 });

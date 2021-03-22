@@ -11,8 +11,10 @@ router.get('/api/personal-conversation-key', async (request, response) => {
       data: null,
       error: {
         code: 404,
-        message: "Invalid query parameters"},
-    }
+        message: 'Invalid query parameters',
+      },
+    };
+
     return response.status(404).json(res);
   }
 
@@ -20,15 +22,17 @@ router.get('/api/personal-conversation-key', async (request, response) => {
     where: {
       userId: userId,
       conversationId: conversationId,
-    }
+    },
   });
   if (!key) {
     const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
       data: null,
       error: {
         code: 404,
-        message: "Could not find key with that user and conversation id pair"},
-    }
+        message: 'Could not find key with that user and conversation id pair',
+      },
+    };
+
     return response.status(404).json(res);
   }
 
@@ -36,12 +40,12 @@ router.get('/api/personal-conversation-key', async (request, response) => {
     personalConversationKey: {
       key: key.value,
     },
-  }
+  };
 
   const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
     data: personalConversationKey,
     error: null,
-  }
+  };
 
   return response.json(res);
 });
