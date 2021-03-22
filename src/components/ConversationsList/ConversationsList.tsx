@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
-import { useConversations, useSessionStorage } from 'hooks';
-import { StorageKey } from 'types';
+import { useConversations, useUserSession } from 'hooks';
 
 export default function ConversationsList() {
-  const { value: userId } = useSessionStorage(StorageKey.USER_ID);
+  const { userId } = useUserSession();
+
   const { conversations } = useConversations(userId);
 
   return (

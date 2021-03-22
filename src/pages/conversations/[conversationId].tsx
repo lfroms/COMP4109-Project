@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useConversation, useSessionStorage } from 'hooks';
-import { StorageKey } from 'types';
+import { useConversation, useUserSession } from 'hooks';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -9,7 +8,7 @@ interface Params extends NodeJS.Dict<string | string[]> {
 
 export default function Conversation() {
   const router = useRouter();
-  const { value: userId } = useSessionStorage(StorageKey.USER_ID);
+  const { userId } = useUserSession();
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId } = router.query as Params;
 

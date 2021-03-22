@@ -4,3 +4,4 @@ export { default as useSocketContext } from './useSocketContext';
 export { default as useRegistration } from './useRegistration';
 export { default as useSessionStorage } from './useSessionStorage';
 export { default as useKeyStore } from './useKeyStore';
+export { default as useUserSession } from './useUserSession';

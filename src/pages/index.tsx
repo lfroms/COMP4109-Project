@@ -9,7 +9,10 @@ export default function Index() {
   const register = useRegistration();
   const [userId, setUserId] = useState('');
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
+
+  // TODO: Replace with JWT storage once authentication implemented.
   const { set: setUserIdInSessionStorage } = useSessionStorage(StorageKey.USER_ID);
+
   const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
   function handleLogin() {
