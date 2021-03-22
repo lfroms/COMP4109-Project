@@ -6,24 +6,9 @@ import { AsymmetricEncryptionService, SymmetricEncryptionService } from '../serv
 export default function Index() {
   const router = useRouter();
   const createConversation = useCreateConversation();
-  const [conversationId, setConversationId] = useState('');
   const [userId, setUserId] = useState('');
 
-  const inputUserName = (
-    <input type="text" onChange={elem => setUserId(elem.currentTarget.value)} value={userId} />
-  );
-
-  const inputRoomName = (
-    <input
-      type="text"
-      onChange={element => setConversationId(element.currentTarget.value)}
-      value={conversationId}
-    />
-  );
-
-  const joinButton = <button onClick={joinRoom}>Join</button>;
-
-  async function joinRoom() {
+  async function handleLogin() {
     const privateMessageEncryptionKey = await SymmetricEncryptionService.generateKey();
     const encryptionService = new SymmetricEncryptionService(privateMessageEncryptionKey);
     const cryptoKeyPair = await AsymmetricEncryptionService.generateKeyPair();
@@ -50,12 +35,20 @@ export default function Index() {
     <div>
       <h1>Welcome to CryptoChat!</h1>
       <div>
-        <p>Enter the room to join below:</p>
-        username:
-        {inputUserName}
-        room:
-        {inputRoomName}
-        {joinButton}
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
+          username:
+          <input
+            type="text"
+            onChange={elem => setUserId(elem.currentTarget.value)}
+            value={userId}
+          />
+          <input type="submit" value="Join" />
+        </form>
       </div>
     </div>
   );

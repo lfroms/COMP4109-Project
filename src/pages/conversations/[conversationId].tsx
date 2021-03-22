@@ -7,7 +7,7 @@ interface Params extends NodeJS.Dict<string | string[]> {
   userId: string; // TODO: Remove this once we can fetch this from the session.
 }
 
-export default function Chat() {
+export default function Conversation() {
   const router = useRouter();
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId, userId } = router.query as Params;

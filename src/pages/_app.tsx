@@ -1,11 +1,13 @@
 import React from 'react';
 import type { AppProps } from 'next/app';
-import { SocketContextProvider } from 'components';
+import { Frame, SocketContextProvider } from 'components';
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <SocketContextProvider>
-      <Component {...pageProps} />
+      <Frame visible={router.pathname !== '/'}>
+        <Component {...pageProps} />
+      </Frame>
     </SocketContextProvider>
   );
 }
