@@ -3,30 +3,47 @@ import { PersonalConversationKey } from '../models/PersonalConversationKey';
 
 const router = Router();
 
-router.get('/api/personalConversationKey', async (request, response) => {
+router.get('/api/personal-conversation-key', async (request, response) => {
   const userId = parseInt(request.query.userId as string);
   const conversationId = parseInt(request.query.conversationId as string);
   if (!userId || !conversationId) {
-    return response.json('Invalid query parameters');
+    const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
+      data: null,
+      error: {
+        code: 404,
+        message: "Invalid query parameters"},
+    }
+    return response.status(404).json(res);
   }
 
-  const personalConversationKey = await PersonalConversationKey.findOne({
+  const key = await PersonalConversationKey.findOne({
     where: {
       userId: userId,
       conversationId: conversationId,
     }
   });
-  if (!personalConversationKey) {
-    return response.json('Invalid UserId');
+  if (!key) {
+    const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
+      data: null,
+      error: {
+        code: 404,
+        message: "Could not find key with that user and conversation id pair"},
+    }
+    return response.status(404).json(res);
   }
 
-  const personalConversationKeyData: PersonalConversationKeyData = {
-    userId: personalConversationKey.user.id,
-    conversationId: personalConversationKey.conversation.id,
-    value: personalConversationKey.value
+  const personalConversationKey: API.PersonalConversationKeyResponse = {
+    personalConversationKey: {
+      key: key.value,
+    },
   }
 
-  return response.json(personalConversationKeyData);
+  const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
+    data: personalConversationKey,
+    error: null,
+  }
+
+  return response.json(res);
 });
 
 export default router;
