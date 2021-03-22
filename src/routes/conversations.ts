@@ -49,7 +49,7 @@ router.get('/api/conversations', async (request, response) => {
   }
 
   const userData = await User.findOne(userId, {
-    relations: ['conversations']
+    relations: ['conversations'],
   });
   if (!userData) {
     const res: API.JSONResponse<API.UserConversationResponse> = {

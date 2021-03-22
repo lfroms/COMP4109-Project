@@ -9,13 +9,9 @@ namespace API {
     error: JSONError | null;
   }
 
-  export interface User {
-    // to do
-  }
+  //export interface User {}
 
-  export interface Message {
-    // to do
-  }
+  //export interface Message {}
 
   export interface Conversation {
     id: number;
@@ -39,5 +35,3 @@ namespace API {
     personalConversationKey: PersonalConversationKey;
   }
 }
-
-
