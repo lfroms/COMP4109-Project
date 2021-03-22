@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useCreateConversation } from 'hooks';
+import { AsymmetricEncryptionService, SymmetricEncryptionService } from '../services';
 
 export default function Index() {
   const router = useRouter();
@@ -23,7 +24,25 @@ export default function Index() {
   const joinButton = <button onClick={joinRoom}>Join</button>;
 
   async function joinRoom() {
-    const conversationId = await createConversation({ participantIds: [userId] });
+    const privateMessageEncryptionKey = await SymmetricEncryptionService.generateKey();
+    const encryptionService = new SymmetricEncryptionService(privateMessageEncryptionKey);
+    const cryptoKeyPair = await AsymmetricEncryptionService.generateKeyPair();
+    const convertPrivateKeyToString = await encryptionService.exportKeyToString();
+    const asymmetricEncryption = new AsymmetricEncryptionService();
+    const encryptedMessageKey = await asymmetricEncryption.encrypt(
+      convertPrivateKeyToString,
+      cryptoKeyPair.publicKey
+    );
+    const publicKeyToString = await AsymmetricEncryptionService.convertPublicKeyToString(
+      cryptoKeyPair.publicKey
+    );
+
+    const conversationId = await createConversation({
+      participantIds: [userId],
+      personalConversationKey: encryptedMessageKey,
+      publicEncryptionKey: publicKeyToString,
+    });
+
     router.push(`/conversations/${conversationId}?userId=${userId}`);
   }
 
