@@ -33,7 +33,17 @@ declare namespace API {
     conversations: Conversation[];
   }
 
+  export interface UserResponse {
+    user: User;
+  }
+
   export interface PersonalConversationKeyResponse {
     personalConversationKey: string;
+  }
+
+  export interface RegistrationRequestBody {
+    name: string;
+    password: string;
+    publicKey: string;
   }
 }

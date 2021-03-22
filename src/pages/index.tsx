@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCreateConversation } from 'hooks';
-import { AsymmetricEncryptionService, SymmetricEncryptionService } from '../services';
+import { useCreateConversation, useRegistration } from 'hooks';
+import {
+  AsymmetricEncryptionService,
+  PrivateKeyTransportService,
+  SymmetricEncryptionService,
+} from '../services';
 
 export default function Index() {
   const router = useRouter();
   const createConversation = useCreateConversation();
-  const [userId, setUserId] = useState('');
+  const register = useRegistration();
+  const [userName, setUserName] = useState('');
 
   async function handleLogin() {
     const privateMessageEncryptionKey = await SymmetricEncryptionService.generateKey();
@@ -23,12 +28,28 @@ export default function Index() {
     );
 
     const conversationId = await createConversation({
-      participantIds: [userId],
+      participantIds: [userName],
       personalConversationKey: encryptedMessageKey,
       publicEncryptionKey: publicKeyToString,
     });
 
-    router.push(`/conversations/${conversationId}?userId=${userId}`);
+    router.push(`/conversations/${conversationId}?userId=${userName}`);
+  }
+
+  async function handleRegister() {
+    const keyPair = await AsymmetricEncryptionService.generateKeyPair();
+    const publicKey = await AsymmetricEncryptionService.convertPublicKeyToString(keyPair.publicKey);
+
+    const { data, error } = await register({ name: userName, password: 'test', publicKey });
+
+    if (!data || error) {
+      console.error('An error occured while trying to register.', error);
+
+      return;
+    }
+
+    const transportService = new PrivateKeyTransportService(keyPair.privateKey);
+    await transportService.downloadAsFile();
   }
 
   return (
@@ -44,10 +65,11 @@ export default function Index() {
           username:
           <input
             type="text"
-            onChange={elem => setUserId(elem.currentTarget.value)}
-            value={userId}
+            onChange={elem => setUserName(elem.currentTarget.value)}
+            value={userName}
           />
           <input type="submit" value="Join" />
+          <input type="button" value="Register" onClick={handleRegister} />
         </form>
       </div>
     </div>
