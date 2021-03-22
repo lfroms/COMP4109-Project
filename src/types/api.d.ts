@@ -1,4 +1,4 @@
-namespace API {
+declare namespace API {
   export interface JSONError {
     code: number;
     message: string;
@@ -19,10 +19,6 @@ namespace API {
     messages: Message[];
   }
 
-  export interface PersonalConversationKey {
-    key: string;
-  }
-
   export interface ConversationResponse {
     conversation: Conversation;
   }
@@ -32,6 +28,6 @@ namespace API {
   }
 
   export interface PersonalConversationKeyResponse {
-    personalConversationKey: PersonalConversationKey;
+    personalConversationKey: string;
   }
 }

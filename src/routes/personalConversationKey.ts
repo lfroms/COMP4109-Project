@@ -37,9 +37,7 @@ router.get('/api/personal-conversation-key', async (request, response) => {
   }
 
   const personalConversationKey: API.PersonalConversationKeyResponse = {
-    personalConversationKey: {
-      key: key.value,
-    },
+    personalConversationKey: key.value,
   };
 
   const res: API.JSONResponse<API.PersonalConversationKeyResponse> = {
