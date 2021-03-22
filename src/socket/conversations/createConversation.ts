@@ -1,8 +1,8 @@
 import { Conversation } from '../../models/Conversation';
 import { Server, Socket } from 'socket.io';
-import { ConversationCreatePayload, SocketEvent } from '../../types';
 import { PersonalConversationKey } from '../../models/PersonalConversationKey';
 import { User } from '../../models/User';
+import { SocketEvent } from '../../types';
 
 export default function createConversation(_io: Server, socket: Socket) {
   socket.on(

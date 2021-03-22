@@ -1,4 +1,4 @@
-export default interface ConversationCreatePayload {
+interface ConversationCreatePayload {
   participantIds: string[];
   personalConversationKey: string;
   publicEncryptionKey: string;

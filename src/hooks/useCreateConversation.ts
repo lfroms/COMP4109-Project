@@ -1,4 +1,4 @@
-import { ConversationCreatePayload, SocketEvent } from 'types';
+import { SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
 export default function useCreateConversation() {

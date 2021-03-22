@@ -4,75 +4,80 @@ import { User } from '../models/User';
 
 const router = Router();
 
-router.get('/api/conversations/:id', async (request, response) => {
-  const conversationId = parseInt(request.params.id);
-  const queryResult = await Conversation.findOne(conversationId, {
-    relations: ['messages', 'participants'],
-  });
+interface ConversationParams {
+  id: number;
+}
 
-  if (!queryResult) {
-    const res: API.JSONResponse<API.ConversationResponse> = {
-      data: null,
-      error: {
-        code: 404,
-        message: 'Could not find conversation with that id',
+type ConversationResponse = API.JSONResponse<API.ConversationResponse>;
+
+router.get<ConversationParams, ConversationResponse>(
+  '/api/conversations/:id',
+  async (request, response) => {
+    const { id: conversationId } = request.params;
+
+    const conversation = await Conversation.findOne(conversationId, {
+      relations: ['messages', 'participants'],
+    });
+
+    if (!conversation) {
+      return response.status(404).json({
+        data: null,
+        error: {
+          code: 404,
+          message: `Could not find conversation with id ${conversationId}`,
+        },
+      });
+    }
+
+    return response.json({
+      data: {
+        conversation,
       },
-    };
-
-    return response.status(404).json(res);
+      error: null,
+    });
   }
+);
 
-  const conversation: API.ConversationResponse = {
-    conversation: queryResult,
-  };
+interface UserConversationsParams {
+  userId: number;
+}
 
-  const res: API.JSONResponse<API.ConversationResponse> = {
-    data: conversation,
-    error: null,
-  };
+type UserConversationsResponse = API.JSONResponse<API.UserConversationResponse>;
 
-  return response.json(res);
-});
+router.get<any, UserConversationsResponse, any, UserConversationsParams>(
+  '/api/conversations',
+  async (request, response) => {
+    const { userId } = request.query;
 
-router.get('/api/conversations', async (request, response) => {
-  const userId = parseInt(request.query.userId as string);
-  if (!userId) {
-    const res: API.JSONResponse<API.UserConversationResponse> = {
-      data: null,
-      error: {
-        code: 404,
-        message: 'Invalid query parameters',
+    if (!userId) {
+      return response.status(400).json({
+        data: null,
+        error: {
+          code: 400,
+          message: 'Invalid query parameters',
+        },
+      });
+    }
+
+    const user = await User.findOne(userId, { relations: ['conversations'] });
+
+    if (!user) {
+      return response.status(404).json({
+        data: null,
+        error: {
+          code: 404,
+          message: `Could not find user with id ${userId}`,
+        },
+      });
+    }
+
+    return response.json({
+      data: {
+        conversations: user.conversations,
       },
-    };
-
-    return response.status(404).json(res);
+      error: null,
+    });
   }
-
-  const userData = await User.findOne(userId, {
-    relations: ['conversations'],
-  });
-  if (!userData) {
-    const res: API.JSONResponse<API.UserConversationResponse> = {
-      data: null,
-      error: {
-        code: 404,
-        message: 'Could not find user with that id',
-      },
-    };
-
-    return response.status(404).json(res);
-  }
-
-  const conversations: API.UserConversationResponse = {
-    conversations: userData.conversations,
-  };
-
-  const res: API.JSONResponse<API.UserConversationResponse> = {
-    data: conversations,
-    error: null,
-  };
-
-  return response.json(res);
-});
+);
 
 export default router;
