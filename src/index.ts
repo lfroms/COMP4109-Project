@@ -6,7 +6,7 @@ import { Server } from 'http';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
-import { conversations, personalConversationKey, ping, register } from './routes';
+import { conversations, personalConversationKey, ping, register, users } from './routes';
 
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
@@ -32,6 +32,7 @@ app
     server.use(conversations);
     server.use(personalConversationKey);
     server.use(register);
+    server.use(users);
 
     // Route everything else to NextJS frontend
     server.get('*', (req, res) => {
