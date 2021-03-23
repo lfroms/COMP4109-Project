@@ -37,6 +37,10 @@ declare namespace API {
     user: User;
   }
 
+  export interface UsersResponse {
+    users: User[];
+  }
+
   export interface PersonalConversationKeyResponse {
     personalConversationKey: string;
   }
