@@ -5,3 +5,4 @@ export { default as useRegistration } from './useRegistration';
 export { default as useSessionStorage } from './useSessionStorage';
 export { default as useKeyStore } from './useKeyStore';
 export { default as useUserSession } from './useUserSession';
+export { default as useFetchUsers } from './useFetchUsers';
