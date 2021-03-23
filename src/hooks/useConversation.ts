@@ -68,6 +68,10 @@ export default function useConversation(
   }
 
   useEffect(() => {
+    if (!conversationId) {
+      return;
+    }
+
     fetchPersonalConversationKey();
   }, [conversationId]);
 
