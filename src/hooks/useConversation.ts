@@ -84,7 +84,7 @@ export default function useConversation(
     }
 
     const encryptedMessage: EncryptedMessagePayload = {
-      ...message,
+      senderId: message.senderId,
       data: await symmetricEncryptionServiceRef.current.encrypt(message.text),
     };
 
