@@ -1,5 +1,8 @@
 interface ConversationCreatePayload {
-  participantIds: string[];
+  participantMetadata: ParticipantMetadata[];
+}
+
+interface ParticipantMetadata {
+  id: number;
   personalConversationKey: string;
-  publicEncryptionKey: string;
 }
