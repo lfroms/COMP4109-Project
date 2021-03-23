@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConversationsList } from 'components';
+import { ConversationsList, UserMenu } from 'components';
 
 interface Props {
   visible?: boolean;
@@ -14,6 +14,7 @@ export default function Frame({ visible = false, children }: Props) {
   return (
     <>
       <ConversationsList />
+      <UserMenu />
       {children}
     </>
   );
