@@ -72,6 +72,7 @@ export default function useConversation(
       return;
     }
 
+    setMessages([]);
     fetchPersonalConversationKey();
   }, [conversationId]);
 
