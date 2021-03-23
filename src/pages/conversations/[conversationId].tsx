@@ -15,7 +15,7 @@ export default function Conversation() {
   const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: MessagePayload = { senderId: userId, data: currentMessageText };
+    const message: DecryptedMessagePayload = { senderId: userId, text: currentMessageText };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -27,7 +27,7 @@ export default function Conversation() {
 
       {messages.map((message, index) => (
         <p key={`message-${index}`}>
-          {message.senderId}: {message.data}
+          {message.senderId}: {message.text}
         </p>
       ))}
 

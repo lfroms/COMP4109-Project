@@ -1,11 +1,47 @@
 import React from 'react';
 import Link from 'next/link';
-import { useConversations, useUserSession } from 'hooks';
+import { useConversations, useFetchUsers, useUserSession } from 'hooks';
+import { AsymmetricEncryptionService, SymmetricEncryptionService } from 'services';
 
 export default function ConversationsList() {
   const { userId } = useUserSession();
+  const fetchUsers = useFetchUsers();
 
-  const { conversations } = useConversations(userId);
+  const { conversations, createConversation } = useConversations(userId);
+
+  async function handleCreateConversation() {
+    const users = await fetchUsers([userId, 2]);
+
+    if (!users) {
+      console.error('Could not create conversation as participants could not be fetched.');
+
+      return;
+    }
+
+    const asymmetricService = new AsymmetricEncryptionService();
+    const sharedSecret = await SymmetricEncryptionService.generateKey();
+    const exportedSharedSecret = await new SymmetricEncryptionService(
+      sharedSecret
+    ).exportKeyToString();
+
+    const participantMetadataQueue = users.map(async user => {
+      const userPublicKey = await AsymmetricEncryptionService.convertStringToPublicKey(
+        user.publicKey
+      );
+
+      return {
+        id: user.id,
+        personalConversationKey: await asymmetricService.encrypt(
+          exportedSharedSecret,
+          userPublicKey
+        ),
+      };
+    });
+
+    const participantMetadata = await Promise.all(participantMetadataQueue);
+
+    createConversation({ participantMetadata });
+  }
 
   return (
     <>
@@ -17,6 +53,7 @@ export default function ConversationsList() {
           </li>
         ))}
       </ul>
+      <button onClick={handleCreateConversation}>Create conversation</button>
     </>
   );
 }
