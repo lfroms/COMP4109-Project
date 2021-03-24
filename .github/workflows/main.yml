@@ -37,3 +37,6 @@ jobs:
           eslint: true
           eslint_extensions: 'js,ts,tsx'
           eslint_dir: src
+
+      - name: Type check
+        uses: andoshin11/typescript-error-reporter-action@v1.0.2
