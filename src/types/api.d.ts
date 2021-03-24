@@ -9,9 +9,15 @@ declare namespace API {
     error: JSONError | null;
   }
 
-  //export interface User {}
+  export interface User {
+    id: number;
+    name: string;
+    publicKey: string;
+  }
 
-  //export interface Message {}
+  export interface Message {
+    content: string;
+  }
 
   export interface Conversation {
     id: number;
@@ -27,7 +33,21 @@ declare namespace API {
     conversations: Conversation[];
   }
 
+  export interface UserResponse {
+    user: User;
+  }
+
+  export interface UsersResponse {
+    users: User[];
+  }
+
   export interface PersonalConversationKeyResponse {
     personalConversationKey: string;
+  }
+
+  export interface RegistrationRequestBody {
+    name: string;
+    password: string;
+    publicKey: string;
   }
 }

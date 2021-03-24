@@ -19,7 +19,7 @@ export default class PrivateKeyTransportService {
 
   public static createCryptoKeyFromPem(string: string) {
     const pemContents = string.substring(RSA_KEY_START.length, string.length - RSA_KEY_END.length);
-    const bodyAsArrayBuffer = Base64.decode(pemContents);
+    const bodyAsArrayBuffer = Base64.decode(pemContents.replace(/(\r\n|\n|\r)/gm, ''));
 
     return window.crypto.subtle.importKey(
       'pkcs8',

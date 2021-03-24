@@ -1,18 +1,27 @@
-import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { Conversation } from './Conversation';
 import { User } from './User';
 
 @Entity()
+@Index(['user', 'conversation'], { unique: true })
 export class PersonalConversationKey extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User;
 
-  @OneToOne(() => Conversation)
+  @ManyToOne(() => Conversation)
   @JoinColumn()
   conversation: Conversation;
 

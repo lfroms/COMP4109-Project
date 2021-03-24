@@ -1,61 +1,85 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useCreateConversation } from 'hooks';
-import { AsymmetricEncryptionService, SymmetricEncryptionService } from '../services';
+import { useKeyStore, useRegistration, useSessionStorage } from 'hooks';
+import { StorageKey } from 'types';
+import { AsymmetricEncryptionService, PrivateKeyTransportService } from 'services';
 
 export default function Index() {
   const router = useRouter();
-  const createConversation = useCreateConversation();
-  const [conversationId, setConversationId] = useState('');
+  const register = useRegistration();
   const [userId, setUserId] = useState('');
+  const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
 
-  const inputUserName = (
-    <input type="text" onChange={elem => setUserId(elem.currentTarget.value)} value={userId} />
-  );
+  // TODO: Replace with JWT storage once authentication implemented.
+  const { set: setUserIdInSessionStorage } = useSessionStorage(StorageKey.USER_ID);
 
-  const inputRoomName = (
-    <input
-      type="text"
-      onChange={element => setConversationId(element.currentTarget.value)}
-      value={conversationId}
-    />
-  );
+  const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
-  const joinButton = <button onClick={joinRoom}>Join</button>;
+  function handleLogin() {
+    setPrivateKey(pemContents);
+    setUserIdInSessionStorage(userId);
+    // TODO: Further login implementation.
+    router.push('/conversations');
+  }
 
-  async function joinRoom() {
-    const privateMessageEncryptionKey = await SymmetricEncryptionService.generateKey();
-    const encryptionService = new SymmetricEncryptionService(privateMessageEncryptionKey);
-    const cryptoKeyPair = await AsymmetricEncryptionService.generateKeyPair();
-    const convertPrivateKeyToString = await encryptionService.exportKeyToString();
-    const asymmetricEncryption = new AsymmetricEncryptionService();
-    const encryptedMessageKey = await asymmetricEncryption.encrypt(
-      convertPrivateKeyToString,
-      cryptoKeyPair.publicKey
-    );
-    const publicKeyToString = await AsymmetricEncryptionService.convertPublicKeyToString(
-      cryptoKeyPair.publicKey
-    );
+  function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
 
-    const conversationId = await createConversation({
-      participantIds: [userId],
-      personalConversationKey: encryptedMessageKey,
-      publicEncryptionKey: publicKeyToString,
-    });
+    if (!file) {
+      return;
+    }
 
-    router.push(`/conversations/${conversationId}?userId=${userId}`);
+    const fileReader = new FileReader();
+
+    fileReader.onload = () => {
+      // It can only be a string since we are using readAsText.
+      setPemContents(fileReader.result as string);
+    };
+
+    fileReader.readAsText(file);
+  }
+
+  async function handleRegister() {
+    const keyPair = await AsymmetricEncryptionService.generateKeyPair();
+    const publicKey = await AsymmetricEncryptionService.convertPublicKeyToString(keyPair.publicKey);
+
+    const { data, error } = await register({ name: userId, password: 'test', publicKey });
+
+    if (!data || error) {
+      console.error('An error occured while trying to register.', error);
+
+      return;
+    }
+
+    const transportService = new PrivateKeyTransportService(keyPair.privateKey);
+    await transportService.downloadAsFile();
   }
 
   return (
     <div>
-      <h1>Welcome to CryptoChat!</h1>
+      <h1>Login</h1>
       <div>
-        <p>Enter the room to join below:</p>
-        username:
-        {inputUserName}
-        room:
-        {inputRoomName}
-        {joinButton}
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            handleLogin();
+          }}
+        >
+          <label>user id (from db):</label>
+          <input
+            type="text"
+            onChange={elem => setUserId(elem.currentTarget.value)}
+            value={userId}
+          />
+          <br />
+          <label>private key (pem):</label>
+          <input type="file" name="privateKey" onChange={handleChangeFile} />
+
+          <br />
+          <br />
+          <input type="submit" value="Login" />
+          <input type="button" value="Register" onClick={handleRegister} />
+        </form>
       </div>
     </div>
   );

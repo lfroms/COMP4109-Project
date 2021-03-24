@@ -11,6 +11,12 @@ router.use((request, response, next) => {
   const method = request.method.blue;
   const url = request.originalUrl;
 
+  if (url.indexOf('_next') !== -1) {
+    next();
+
+    return;
+  }
+
   log(`${status} ${method} ${url}`);
   next();
 });

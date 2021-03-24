@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useConversation } from 'hooks';
+import { useConversation, useUserSession } from 'hooks';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
-  userId: string; // TODO: Remove this once we can fetch this from the session.
 }
 
-export default function Chat() {
+export default function Conversation() {
   const router = useRouter();
+  const { userId } = useUserSession();
   const [currentMessageText, setCurrentMessageText] = useState('');
-  const { conversationId, userId } = router.query as Params;
+  const { conversationId } = router.query as Params;
 
   const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: MessagePayload = { senderId: userId, data: currentMessageText };
+    const message: DecryptedMessagePayload = { senderId: userId, text: currentMessageText };
 
     sendMessage(message);
     setCurrentMessageText('');
@@ -27,7 +27,7 @@ export default function Chat() {
 
       {messages.map((message, index) => (
         <p key={`message-${index}`}>
-          {message.senderId}: {message.data}
+          {message.senderId}: {message.text}
         </p>
       ))}
 
