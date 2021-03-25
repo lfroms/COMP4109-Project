@@ -1,7 +1,7 @@
 import { BaseEncryptionService } from './base';
 import Base64 from 'base64-arraybuffer';
 
-export default class messageAuthenticationService extends BaseEncryptionService {
+export default class MessageAuthenticationService extends BaseEncryptionService {
   private key: CryptoKey;
 
   constructor(key: CryptoKey) {
