@@ -11,4 +11,7 @@ export class Message extends BaseEntity {
 
   @Column()
   content: string;
+
+  @Column()
+  hmac: string;
 }

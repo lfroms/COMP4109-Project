@@ -73,51 +73,6 @@ export default function useConversation(
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
 
-  async function fetchMessages() {
-    const response = await fetch(`/api/conversations/${conversationId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.ConversationResponse>;
-
-    if (!jsonResponse.data) {
-      return;
-    }
-
-    jsonResponse.data.conversation.messages.forEach(async elem => {
-      if (!symmetricEncryptionServiceRef.current) {
-        return;
-      }
-      if (!messageAuthenticationServiceRef.current) {
-        return;
-      }
-      const content = JSON.parse(elem.content);
-
-      const encryptedMessage: EncryptedMessagePayload = {
-        senderId: userId,
-        data: {
-          m: content.m,
-          iv: content.iv,
-        },
-        mac: await messageAuthenticationServiceRef.current.sign(content.m),
-      };
-
-      const decryptedMessage: DecryptedMessagePayload = {
-        senderId: userId,
-        verified: await messageAuthenticationServiceRef.current.verify(
-          encryptedMessage.mac,
-          encryptedMessage.data.m
-        ),
-        text: await symmetricEncryptionServiceRef.current.decrypt(encryptedMessage.data),
-      };
-
-      setMessages(previousMessages => [...previousMessages, decryptedMessage]);
-    });
-  }
-
   useEffect(() => {
     if (!conversationId) {
       return;
@@ -125,7 +80,6 @@ export default function useConversation(
 
     setMessages([]);
     fetchPersonalConversationKey();
-    fetchMessages();
   }, [conversationId]);
 
   async function sendMessage(message: DecryptedMessagePayload) {
