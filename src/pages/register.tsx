@@ -29,7 +29,7 @@ export default function Register() {
     <div>
       <h1>Register</h1>
       <div>
-        <label>user id: </label>
+        <label>user name: </label>
         <input type="text" onChange={elem => setUserId(elem.currentTarget.value)} value={userId} />
         <br />
         <label>Password:</label>
