@@ -83,7 +83,7 @@ export default function useConversation(
 
     const jsonResponse = (await response.json()) as API.JSONResponse<API.ConversationResponse>;
 
-    if (!jsonResponse.data){
+    if (!jsonResponse.data) {
       return;
     }
 
