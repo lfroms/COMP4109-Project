@@ -5,7 +5,7 @@ import { PersonalConversationKey } from '../../models/PersonalConversationKey';
 import { SocketEvent } from '../../types';
 import { log } from '../../helpers';
 
-export default function createConversation(_io: Server, socket: Socket) {
+export default function create(_io: Server, socket: Socket) {
   socket.on(
     SocketEvent.CREATE_CONVERSATION,
     async (payload: ConversationCreatePayload, callback) => {
@@ -37,7 +37,6 @@ export default function createConversation(_io: Server, socket: Socket) {
         await personalConversationKey.save();
       });
 
-      // TODO: Join all participants to the conversation, not just the current one.
       socket.join(conversation.id.toString());
 
       callback(conversation.id);

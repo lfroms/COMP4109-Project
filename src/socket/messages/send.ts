@@ -5,7 +5,7 @@ import { User } from '../../models/User';
 import { SocketEvent } from '../../types';
 import { log } from '../../helpers';
 
-export default function sendMessage(io: Server, socket: Socket) {
+export default function send(io: Server, socket: Socket) {
   socket.on(
     SocketEvent.MESSAGE,
     async (messagePayload: EncryptedMessagePayload, conversationId: string) => {

@@ -2,8 +2,8 @@ import { Server } from 'http';
 import { Socket, Server as SocketIOServer } from 'socket.io';
 import { log } from '../helpers';
 
-import { createConversation } from './conversations';
-import { sendMessage } from './messages';
+import { create as createConversation } from './conversations';
+import { send as sendMessage } from './messages';
 
 export default function initialize(server: Server) {
   const io = new SocketIOServer(server);
