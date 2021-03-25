@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useKeyStore, useRegistration, useSessionStorage } from 'hooks';
+import { useKeyStore, useSessionStorage } from 'hooks';
 import { StorageKey } from 'types';
-import { AsymmetricEncryptionService, PrivateKeyTransportService } from 'services';
 
 export default function Index() {
   const router = useRouter();
-  const register = useRegistration();
   const [userId, setUserId] = useState('');
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
 
@@ -40,19 +38,7 @@ export default function Index() {
   }
 
   async function handleRegister() {
-    const keyPair = await AsymmetricEncryptionService.generateKeyPair();
-    const publicKey = await AsymmetricEncryptionService.convertPublicKeyToString(keyPair.publicKey);
-
-    const { data, error } = await register({ name: userId, password: 'test', publicKey });
-
-    if (!data || error) {
-      console.error('An error occured while trying to register.', error);
-
-      return;
-    }
-
-    const transportService = new PrivateKeyTransportService(keyPair.privateKey);
-    await transportService.downloadAsFile();
+    router.push('/register');
   }
 
   return (
