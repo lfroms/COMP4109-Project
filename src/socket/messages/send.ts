@@ -30,9 +30,6 @@ export default function send(io: Server, socket: Socket) {
       message.hmac = JSON.stringify(messagePayload.mac);
       await message.save();
 
-      // TODO: Remove this once we can autojoin all participants.
-      socket.join(conversationId);
-
       io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, messagePayload);
     }
   );
