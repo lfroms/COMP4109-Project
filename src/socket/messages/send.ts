@@ -10,6 +10,7 @@ export default function send(io: Server, socket: Socket) {
     SocketEvent.MESSAGE,
     async (messagePayload: EncryptedMessagePayload, conversationId: string) => {
       const conversation = await Conversation.findOne(conversationId);
+
       if (!conversation) {
         log(`Could not find conversation with id ${conversationId}`, { severity: 'error' });
 
@@ -17,6 +18,7 @@ export default function send(io: Server, socket: Socket) {
       }
 
       const user = await User.findOne(messagePayload.senderId);
+
       if (!user) {
         log(`Could not find user with id ${messagePayload.senderId}`, { severity: 'error' });
 
@@ -27,7 +29,7 @@ export default function send(io: Server, socket: Socket) {
       message.sender = user;
       message.content = JSON.stringify(messagePayload.data);
       message.conversation = conversation;
-      message.hmac = JSON.stringify(messagePayload.mac);
+      message.hmac = messagePayload.mac;
       await message.save();
 
       io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, messagePayload);
