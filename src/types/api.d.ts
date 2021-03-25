@@ -17,6 +17,11 @@ declare namespace API {
 
   export interface Message {
     content: string;
+    hmac: string;
+  }
+
+  export interface MessagesResponse {
+    messages: EncryptedMessagePayload[];
   }
 
   export interface Conversation {

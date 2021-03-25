@@ -73,13 +73,54 @@ export default function useConversation(
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
 
-  useEffect(() => {
+  async function fetchMessages() {
+    const response = await fetch(`/api/messages?conversationId=${conversationId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const jsonResponse = (await response.json()) as API.JSONResponse<API.MessagesResponse>;
+
+    if (!jsonResponse.data) {
+      return;
+    }
+
+    const decryptedMessageList = jsonResponse.data.messages.map(async message => {
+      if (!symmetricEncryptionServiceRef.current) {
+        return;
+      }
+      if (!messageAuthenticationServiceRef.current) {
+        return;
+      }
+
+      const decryptedMessage: DecryptedMessagePayload = {
+        senderId: userId,
+        verified: await messageAuthenticationServiceRef.current.verify(message.mac, message.data.m),
+        text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
+      };
+
+      return decryptedMessage;
+    });
+
+    const decryptedMessages = await Promise.all(decryptedMessageList);
+
+    setMessages(decryptedMessages.filter(Boolean) as DecryptedMessagePayload[]);
+  }
+
+  async function fetchData() {
     if (!conversationId) {
       return;
     }
 
     setMessages([]);
-    fetchPersonalConversationKey();
+    await fetchPersonalConversationKey();
+    await fetchMessages();
+  }
+
+  useEffect(() => {
+    fetchData();
   }, [conversationId]);
 
   async function sendMessage(message: DecryptedMessagePayload) {

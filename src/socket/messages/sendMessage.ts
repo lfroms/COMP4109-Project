@@ -1,6 +1,7 @@
 import { Server, Socket } from 'socket.io';
-import { Message } from '../../models/Message';
 import { Conversation } from '../../models/Conversation';
+import { Message } from '../../models/Message';
+import { User } from '../../models/User';
 import { SocketEvent } from '../../types';
 import { log } from '../../helpers';
 
@@ -9,16 +10,24 @@ export default function sendMessage(io: Server, socket: Socket) {
     SocketEvent.MESSAGE,
     async (messagePayload: EncryptedMessagePayload, conversationId: string) => {
       const conversation = await Conversation.findOne(conversationId);
-
       if (!conversation) {
         log(`Could not find conversation with id ${conversationId}`, { severity: 'error' });
 
         return;
       }
 
+      const user = await User.findOne(messagePayload.senderId);
+      if (!user) {
+        log(`Could not find user with id ${messagePayload.senderId}`, { severity: 'error' });
+
+        return;
+      }
+
       const message = new Message();
-      message.conversation = conversation;
+      message.sender = user;
       message.content = JSON.stringify(messagePayload.data);
+      message.conversation = conversation;
+      message.hmac = JSON.stringify(messagePayload.mac);
       await message.save();
 
       // TODO: Remove this once we can autojoin all participants.
