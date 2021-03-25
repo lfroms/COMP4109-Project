@@ -83,17 +83,20 @@ export default function useConversation(
 
     const jsonResponse = (await response.json()) as API.JSONResponse<API.ConversationResponse>;
 
-    jsonResponse.data?.conversation.messages.forEach(async elem => {
+    if (!jsonResponse.data){
+      return;
+    }
+
+    jsonResponse.data.conversation.messages.forEach(async elem => {
       if (!symmetricEncryptionServiceRef.current) {
         return;
       }
       if (!messageAuthenticationServiceRef.current) {
         return;
       }
-
       const content = JSON.parse(elem.content);
 
-      const encryptedMessagePayload: EncryptedMessagePayload = {
+      const encryptedMessage: EncryptedMessagePayload = {
         senderId: userId,
         data: {
           m: content.m,
@@ -104,11 +107,11 @@ export default function useConversation(
 
       const decryptedMessage: DecryptedMessagePayload = {
         senderId: userId,
-        verified: await messageAuthenticationServiceRef.current?.verify(
-          encryptedMessagePayload.mac,
-          encryptedMessagePayload.data.m
+        verified: await messageAuthenticationServiceRef.current.verify(
+          encryptedMessage.mac,
+          encryptedMessage.data.m
         ),
-        text: await symmetricEncryptionServiceRef.current.decrypt(encryptedMessagePayload.data),
+        text: await symmetricEncryptionServiceRef.current.decrypt(encryptedMessage.data),
       };
 
       setMessages(previousMessages => [...previousMessages, decryptedMessage]);
