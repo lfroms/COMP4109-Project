@@ -19,11 +19,12 @@ export default function subscribe(_io: Server, socket: Socket) {
         return;
       }
 
-      const conversationIds = user.conversations.map(conversation => conversation.id);
+      const conversationIds = user.conversations.map(conversation => conversation.id.toString());
+
+      socket.join(conversationIds);
 
       conversationIds.forEach(id => {
         log(`Subscribing user ${userId} to conversation ${id}`, { title: 'Subscription' });
-        socket.join(id.toString());
       });
     }
   );
