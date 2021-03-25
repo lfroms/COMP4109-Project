@@ -43,6 +43,7 @@ declare namespace API {
 
   export interface PersonalConversationKeyResponse {
     personalConversationKey: string;
+    hmacKey: string;
   }
 
   export interface RegistrationRequestBody {

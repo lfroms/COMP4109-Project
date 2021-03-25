@@ -3,6 +3,7 @@ import { SocketEvent, StorageKey } from 'types';
 import { useKeyStore, useSocketContext, useUserSession } from 'hooks';
 import {
   AsymmetricEncryptionService,
+  MessageAuthenticationService,
   PrivateKeyTransportService,
   SymmetricEncryptionService,
 } from 'services';
@@ -14,6 +15,7 @@ export default function useConversation(
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
   const { userId } = useUserSession();
   const symmetricEncryptionServiceRef = useRef<SymmetricEncryptionService>();
+  const messageAuthenticationServiceRef = useRef<MessageAuthenticationService>();
   const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
 
   useEffect(() => {
@@ -21,9 +23,12 @@ export default function useConversation(
       if (!symmetricEncryptionServiceRef.current) {
         return;
       }
-
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
+        verified: await messageAuthenticationServiceRef.current?.verify(
+          message.mac,
+          message.data.m
+        ),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
       };
 
@@ -50,7 +55,7 @@ export default function useConversation(
       return;
     }
 
-    const { personalConversationKey } = jsonResponse.data;
+    const { personalConversationKey, hmacKey } = jsonResponse.data;
 
     const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(privateKey);
 
@@ -63,8 +68,9 @@ export default function useConversation(
     const sharedSecretAsCryptoKey = await SymmetricEncryptionService.createCryptoKeyFromString(
       decryptedKey
     );
-
+    const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(hmacKey);
     symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(sharedSecretAsCryptoKey);
+    messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
 
   useEffect(() => {
@@ -83,9 +89,18 @@ export default function useConversation(
       return;
     }
 
+    if (!messageAuthenticationServiceRef.current) {
+      console.warn(
+        'Message not sent because Message Authentication service was not yet configured.'
+      );
+
+      return;
+    }
+    const data = await symmetricEncryptionServiceRef.current.encrypt(message.text);
     const encryptedMessage: EncryptedMessagePayload = {
       senderId: message.senderId,
-      data: await symmetricEncryptionServiceRef.current.encrypt(message.text),
+      data,
+      mac: await messageAuthenticationServiceRef.current.sign(data.m),
     };
 
     socket.emit(SocketEvent.MESSAGE, encryptedMessage, conversationId);
