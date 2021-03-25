@@ -5,8 +5,8 @@ import {
   AsymmetricEncryptionService,
   PrivateKeyTransportService,
   SymmetricEncryptionService,
+  MessageAuthenticationService,
 } from 'services';
-import messageAuthenticationService from '../services/messageAuthenticationService.';
 
 export default function useConversation(
   conversationId: string
