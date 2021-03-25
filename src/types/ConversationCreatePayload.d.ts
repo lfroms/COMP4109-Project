@@ -5,4 +5,5 @@ interface ConversationCreatePayload {
 interface ParticipantMetadata {
   id: number;
   personalConversationKey: string;
+  hmac: string;
 }

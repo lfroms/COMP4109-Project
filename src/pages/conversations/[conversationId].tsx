@@ -27,7 +27,8 @@ export default function Conversation() {
 
       {messages.map((message, index) => (
         <p key={`message-${index}`}>
-          {message.senderId}: {message.text}
+          {message.senderId}: {message.text}{' '}
+          {message.verified ? 'verified signature' : 'invalid signature'}
         </p>
       ))}
 

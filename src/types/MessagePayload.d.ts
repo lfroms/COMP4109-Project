@@ -9,8 +9,10 @@ interface EncryptedPayload {
 
 interface EncryptedMessagePayload extends MessagePayload {
   data: EncryptedPayload;
+  mac: string;
 }
 
 interface DecryptedMessagePayload extends MessagePayload {
   text: string;
+  verified?: boolean;
 }

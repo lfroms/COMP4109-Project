@@ -27,4 +27,7 @@ export class PersonalConversationKey extends BaseEntity {
 
   @Column()
   value: string;
+
+  @Column()
+  hmacKey: string;
 }

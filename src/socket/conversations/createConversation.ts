@@ -33,6 +33,7 @@ export default function createConversation(_io: Server, socket: Socket) {
         personalConversationKey.user = user;
         personalConversationKey.conversation = conversation;
         personalConversationKey.value = participant.personalConversationKey;
+        personalConversationKey.hmacKey = participant.hmac;
         await personalConversationKey.save();
       });
 

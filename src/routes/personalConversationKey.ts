@@ -42,6 +42,7 @@ router.get<any, Response, any, Params>(
     return response.json({
       data: {
         personalConversationKey: key.value,
+        hmacKey: key.hmacKey,
       },
       error: null,
     });

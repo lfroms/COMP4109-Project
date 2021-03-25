@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useConversations, useFetchUsers, useUserSession } from 'hooks';
 import { AsymmetricEncryptionService, SymmetricEncryptionService } from 'services';
+import messageAuthenticationService from '../../services/messageAuthenticationService.';
 
 export default function ConversationsList() {
   const { userId } = useUserSession();
@@ -23,6 +24,10 @@ export default function ConversationsList() {
     const exportedSharedSecret = await new SymmetricEncryptionService(
       sharedSecret
     ).exportKeyToString();
+    const hmacKey = await messageAuthenticationService.generateKey();
+    const exportedSharedMacKey = await new messageAuthenticationService(
+      hmacKey
+    ).exportKeyToString();
 
     const participantMetadataQueue = users.map(async user => {
       const userPublicKey = await AsymmetricEncryptionService.convertStringToPublicKey(
@@ -35,6 +40,7 @@ export default function ConversationsList() {
           exportedSharedSecret,
           userPublicKey
         ),
+        hmac: await asymmetricService.encrypt(exportedSharedMacKey, userPublicKey),
       };
     });
 
