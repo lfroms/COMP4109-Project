@@ -12,7 +12,10 @@ type MessagesResponse = API.JSONResponse<API.MessagesResponse>;
 router.get<any, MessagesResponse, any, Request>('/api/messages', async (request, response) => {
   const { conversationId } = request.query;
 
-  const messages = await Message.find({ where: { conversation: {id: conversationId} }, relations: [ 'sender' ]});
+  const messages = await Message.find({
+    where: { conversation: {id: conversationId} },
+    relations: [ 'sender' ],
+  });
 
   if (!messages) {
     return response.status(404).json({
@@ -31,7 +34,8 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
       senderId: message.sender.id,
       data: encryptedPayload,
       mac: message.hmac,
-    }
+    };
+
     return encryptedMessage;
   });
 
