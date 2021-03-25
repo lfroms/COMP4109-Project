@@ -23,7 +23,6 @@ export default function useConversation(
       if (!symmetricEncryptionServiceRef.current) {
         return;
       }
-      messageAuthenticationServiceRef.current?.verify(message.mac, message.data.m);
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
         verified: await messageAuthenticationServiceRef.current?.verify(
