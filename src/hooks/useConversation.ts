@@ -97,10 +97,7 @@ export default function useConversation(
 
       const decryptedMessage: DecryptedMessagePayload = {
         senderId: userId,
-        verified: await messageAuthenticationServiceRef.current.verify(
-          message.mac,
-          message.data.m
-        ),
+        verified: await messageAuthenticationServiceRef.current.verify(message.mac, message.data.m),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
       };
 

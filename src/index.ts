@@ -6,14 +6,7 @@ import { Server } from 'http';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
-import {
-  conversations,
-  messages,
-  personalConversationKey,
-  ping,
-  register,
-  users
-} from './routes';
+import { conversations, messages, personalConversationKey, ping, register, users } from './routes';
 
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';

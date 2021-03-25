@@ -21,7 +21,7 @@ declare namespace API {
   }
 
   export interface MessagesResponse {
-    messages: EncryptedMessagePayload[]
+    messages: EncryptedMessagePayload[];
   }
 
   export interface Conversation {

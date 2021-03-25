@@ -12,12 +12,14 @@ export default function sendMessage(io: Server, socket: Socket) {
       const conversation = await Conversation.findOne(conversationId);
       if (!conversation) {
         log(`Could not find conversation with id ${conversationId}`, { severity: 'error' });
+
         return;
       }
 
       const user = await User.findOne(messagePayload.senderId);
       if (!user) {
         log(`Could not find user with id ${messagePayload.senderId}`, { severity: 'error' });
+
         return;
       }
 
