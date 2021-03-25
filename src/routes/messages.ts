@@ -13,8 +13,8 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
   const { conversationId } = request.query;
 
   const messages = await Message.find({
-    where: { conversation: {id: conversationId} },
-    relations: [ 'sender' ],
+    where: { conversation: { id: conversationId } },
+    relations: ['sender'],
   });
 
   if (!messages) {
