@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useConversations, useFetchUsers, useUserSession } from 'hooks';
 import { AsymmetricEncryptionService, SymmetricEncryptionService } from 'services';
-import messageAuthenticationService from '../../services/messageAuthenticationService.';
+import messageAuthenticationService from '../../services/messageAuthenticationService';
 
 export default function ConversationsList() {
   const { userId } = useUserSession();
