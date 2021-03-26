@@ -42,7 +42,7 @@ interface UserConversationsParams {
   userId: number;
 }
 
-type UserConversationsResponse = API.JSONResponse<API.UserConversationResponse>;
+type UserConversationsResponse = API.JSONResponse<API.ConversationsResponse>;
 
 router.get<any, UserConversationsResponse, any, UserConversationsParams>(
   '/api/conversations',
