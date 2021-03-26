@@ -68,17 +68,21 @@ export default function useConversation(
     const { personalConversationKey, hmacKey } = jsonResponse.data;
 
     const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(privateKey);
-
     const asymmetricService = new AsymmetricEncryptionService();
-    const decryptedKey = await asymmetricService.decrypt(
+
+    const decryptedSymmetricKey = await asymmetricService.decrypt(
       personalConversationKey,
       importedPrivateKey
     );
+    const decryptedHmacKey = await asymmetricService.decrypt(hmacKey, importedPrivateKey);
 
     const sharedSecretAsCryptoKey = await SymmetricEncryptionService.createCryptoKeyFromString(
-      decryptedKey
+      decryptedSymmetricKey
     );
-    const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(hmacKey);
+    const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(
+      decryptedHmacKey
+    );
+
     symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(sharedSecretAsCryptoKey);
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
