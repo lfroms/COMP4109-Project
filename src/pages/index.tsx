@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useKeyStore, useSessionStorage } from 'hooks';
+import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
 
 export default function Index() {
   const router = useRouter();
   const [userId, setUserId] = useState('');
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
-
-  // TODO: Replace with JWT storage once authentication implemented.
-  const { set: setUserIdInSessionStorage } = useSessionStorage(StorageKey.USER_ID);
+  const { signIn } = useUserSession();
 
   const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
   function handleLogin() {
     setPrivateKey(pemContents);
-    setUserIdInSessionStorage(userId);
+    signIn(userId, '');
     // TODO: Further login implementation.
     router.push('/conversations');
   }

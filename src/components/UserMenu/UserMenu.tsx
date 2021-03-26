@@ -4,10 +4,10 @@ import { useUserSession } from 'hooks';
 
 export default function UserMenu() {
   const router = useRouter();
-  const { userId, logOut } = useUserSession();
+  const { userId, signOut } = useUserSession();
 
   function handleLogOut() {
-    logOut();
+    signOut();
     router.replace('/');
   }
 

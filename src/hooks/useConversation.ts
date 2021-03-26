@@ -102,10 +102,11 @@ export default function useConversation(
     }
 
     const decryptedMessageList = jsonResponse.data.messages.map(async message => {
-      if (!symmetricEncryptionServiceRef.current) {
-        return;
-      }
-      if (!messageAuthenticationServiceRef.current) {
+      if (
+        !symmetricEncryptionServiceRef.current ||
+        !messageAuthenticationServiceRef.current ||
+        !userId
+      ) {
         return;
       }
 

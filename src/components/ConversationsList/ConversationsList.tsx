@@ -11,10 +11,10 @@ export default function ConversationsList() {
   const { userId } = useUserSession();
   const fetchUsers = useFetchUsers();
 
-  const { conversations, createConversation } = useConversations(userId);
+  const { conversations, createConversation } = useConversations(userId ?? 0);
 
   async function handleCreateConversation() {
-    const users = await fetchUsers([userId, 2]);
+    const users = await fetchUsers([userId ?? 0, 2]);
 
     if (!users) {
       console.error('Could not create conversation as participants could not be fetched.');
