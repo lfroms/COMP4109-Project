@@ -10,6 +10,7 @@ import { conversations, messages, personalConversationKey, ping, register, users
 
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
+import { Connection } from './models/Connection';
 
 const dev = process.env.NODE_ENV !== 'production';
 const PORT = process.env.PORT ?? 3000;
@@ -34,6 +35,9 @@ app
     server.use(ping);
     server.use(register);
     server.use(users);
+
+    // Clear old WebSocket connections
+    Connection.clear();
 
     // Route everything else to NextJS frontend
     server.get('*', (req, res) => {

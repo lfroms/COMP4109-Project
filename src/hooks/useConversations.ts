@@ -38,6 +38,8 @@ export default function useConversations(userId: number) {
   useEffect(() => {
     fetchConversations();
     subscribeToConversations({ userId });
+
+    socket.on(SocketEvent.NOTIFY_CONVERSATIONS, fetchConversations);
   }, []);
 
   return { conversations, createConversation };
