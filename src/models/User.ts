@@ -1,4 +1,12 @@
-import { BaseEntity, Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  Index,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 import { Conversation } from './Conversation';
 
@@ -9,6 +17,10 @@ export class User extends BaseEntity {
 
   @Column()
   name: string;
+
+  @Index({ unique: true })
+  @Column()
+  username: string;
 
   @Column()
   password: string;
