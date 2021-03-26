@@ -1,1 +1,1 @@
-export { default as BaseEncryptionService } from './baseEncryptionService';
+export { default as BaseEncryptionService } from './BaseEncryptionService';
