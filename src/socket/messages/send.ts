@@ -6,33 +6,30 @@ import { SocketEvent } from '../../types';
 import { log } from '../../helpers';
 
 export default function send(io: Server, socket: Socket) {
-  socket.on(
-    SocketEvent.MESSAGE,
-    async (messagePayload: EncryptedMessagePayload, conversationId: string) => {
-      const conversation = await Conversation.findOne(conversationId);
+  socket.on(SocketEvent.MESSAGE, async (payload: EncryptedMessagePayload) => {
+    const conversation = await Conversation.findOne(payload.conversationId);
 
-      if (!conversation) {
-        log(`Could not find conversation with id ${conversationId}`, { severity: 'error' });
+    if (!conversation) {
+      log(`Could not find conversation with id ${payload.conversationId}`, { severity: 'error' });
 
-        return;
-      }
-
-      const user = await User.findOne(messagePayload.senderId);
-
-      if (!user) {
-        log(`Could not find user with id ${messagePayload.senderId}`, { severity: 'error' });
-
-        return;
-      }
-
-      const message = new Message();
-      message.sender = user;
-      message.content = JSON.stringify(messagePayload.data);
-      message.conversation = conversation;
-      message.hmac = messagePayload.mac;
-      await message.save();
-
-      io.sockets.in(conversationId).emit(SocketEvent.MESSAGE, messagePayload);
+      return;
     }
-  );
+
+    const user = await User.findOne(payload.senderId);
+
+    if (!user) {
+      log(`Could not find user with id ${payload.senderId}`, { severity: 'error' });
+
+      return;
+    }
+
+    const message = new Message();
+    message.sender = user;
+    message.content = JSON.stringify(payload.data);
+    message.conversation = conversation;
+    message.hmac = payload.mac;
+    await message.save();
+
+    io.in(payload.conversationId.toString()).emit(SocketEvent.MESSAGE, payload);
+  });
 }

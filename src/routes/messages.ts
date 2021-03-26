@@ -34,6 +34,7 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
       senderId: message.sender.id,
       data: encryptedPayload,
       mac: message.hmac,
+      conversationId: parseInt(conversationId),
     };
 
     return encryptedMessage;

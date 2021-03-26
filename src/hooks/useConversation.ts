@@ -19,10 +19,20 @@ export default function useConversation(
   const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
 
   useEffect(() => {
+    if (!conversationId) {
+      return;
+    }
+
     socket.on(SocketEvent.MESSAGE, async (message: EncryptedMessagePayload) => {
       if (!symmetricEncryptionServiceRef.current) {
         return;
       }
+
+      // Don't display messages from other conversations.
+      if (message.conversationId !== parseInt(conversationId)) {
+        return;
+      }
+
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
         verified: await messageAuthenticationServiceRef.current?.verify(
@@ -34,7 +44,7 @@ export default function useConversation(
 
       setMessages(previousMessages => [...previousMessages, decryptedMessage]);
     });
-  }, []);
+  }, [conversationId]);
 
   async function fetchPersonalConversationKey() {
     const response = await fetch(
@@ -142,9 +152,10 @@ export default function useConversation(
       senderId: message.senderId,
       data,
       mac: await messageAuthenticationServiceRef.current.sign(data.m),
+      conversationId: parseInt(conversationId),
     };
 
-    socket.emit(SocketEvent.MESSAGE, encryptedMessage, conversationId);
+    socket.emit(SocketEvent.MESSAGE, encryptedMessage);
   }
 
   return [messages, sendMessage];

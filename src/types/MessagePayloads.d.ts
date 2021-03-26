@@ -10,6 +10,7 @@ interface EncryptedPayload {
 interface EncryptedMessagePayload extends MessagePayload {
   data: EncryptedPayload;
   mac: string;
+  conversationId: number;
 }
 
 interface DecryptedMessagePayload extends MessagePayload {
