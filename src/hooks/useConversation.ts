@@ -44,6 +44,10 @@ export default function useConversation(
 
       setMessages(previousMessages => [...previousMessages, decryptedMessage]);
     });
+
+    return () => {
+      socket.removeListener(SocketEvent.MESSAGE);
+    };
   }, [conversationId]);
 
   async function fetchPersonalConversationKey() {
