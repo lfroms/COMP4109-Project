@@ -9,7 +9,8 @@ interface EncryptedPayload {
 
 interface EncryptedMessagePayload extends MessagePayload {
   data: EncryptedPayload;
-  mac: string;
+  hmac: string;
+  conversationId: number;
 }
 
 interface DecryptedMessagePayload extends MessagePayload {

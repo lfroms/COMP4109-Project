@@ -6,26 +6,22 @@ export default function useConversations(userId: number) {
   const socket = useSocketContext();
   const [conversations, setConversations] = useState<API.Conversation[]>([]);
 
-  useEffect(() => {
-    async function fetchConversations() {
-      const response = await fetch(`/api/conversations?userId=${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+  async function fetchConversations() {
+    const response = await fetch(`/api/conversations?userId=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      const jsonResponse = (await response.json()) as API.JSONResponse<API.UserConversationResponse>;
+    const jsonResponse = (await response.json()) as API.JSONResponse<API.UserConversationResponse>;
 
-      if (!jsonResponse.data?.conversations) {
-        return;
-      }
-
-      setConversations(jsonResponse.data.conversations);
+    if (!jsonResponse.data?.conversations) {
+      return;
     }
 
-    fetchConversations();
-  }, []);
+    setConversations(jsonResponse.data.conversations);
+  }
 
   function createConversation(payload: ConversationCreatePayload) {
     return new Promise<number>(resolve => {
@@ -34,6 +30,17 @@ export default function useConversations(userId: number) {
       });
     });
   }
+
+  function subscribeToConversations(payload: ConversationsSubscribePayload) {
+    socket.emit(SocketEvent.SUBSCRIBE_TO_CONVERSATIONS, payload);
+  }
+
+  useEffect(() => {
+    fetchConversations();
+    subscribeToConversations({ userId });
+
+    socket.on(SocketEvent.NOTIFY_CONVERSATIONS, fetchConversations);
+  }, []);
 
   return { conversations, createConversation };
 }

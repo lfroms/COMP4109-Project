@@ -1,12 +1,6 @@
-import { useSessionStorage } from 'hooks';
-import { StorageKey } from 'types';
+import { UserSessionContext } from 'components';
+import { useContext } from 'react';
 
 export default function useUserSession() {
-  const { remove, value } = useSessionStorage(StorageKey.USER_ID);
-
-  function logOut() {
-    remove();
-  }
-
-  return { userId: value, logOut };
+  return useContext(UserSessionContext);
 }

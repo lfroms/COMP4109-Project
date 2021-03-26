@@ -1,0 +1,3 @@
+interface ConnectionRegisterPayload {
+  userId: number;
+}

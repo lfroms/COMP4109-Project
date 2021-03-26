@@ -15,7 +15,14 @@ export default function Conversation() {
   const [messages, sendMessage] = useConversation(conversationId);
 
   function handleSendButtonClick() {
-    const message: DecryptedMessagePayload = { senderId: userId, text: currentMessageText };
+    if (!userId) {
+      return;
+    }
+
+    const message: DecryptedMessagePayload = {
+      senderId: userId,
+      text: currentMessageText,
+    };
 
     sendMessage(message);
     setCurrentMessageText('');

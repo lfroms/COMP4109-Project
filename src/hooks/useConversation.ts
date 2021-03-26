@@ -19,14 +19,24 @@ export default function useConversation(
   const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
 
   useEffect(() => {
+    if (!conversationId) {
+      return;
+    }
+
     socket.on(SocketEvent.MESSAGE, async (message: EncryptedMessagePayload) => {
       if (!symmetricEncryptionServiceRef.current) {
         return;
       }
+
+      // Don't display messages from other conversations.
+      if (message.conversationId !== parseInt(conversationId)) {
+        return;
+      }
+
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
         verified: await messageAuthenticationServiceRef.current?.verify(
-          message.mac,
+          message.hmac,
           message.data.m
         ),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
@@ -34,7 +44,11 @@ export default function useConversation(
 
       setMessages(previousMessages => [...previousMessages, decryptedMessage]);
     });
-  }, []);
+
+    return () => {
+      socket.removeListener(SocketEvent.MESSAGE);
+    };
+  }, [conversationId]);
 
   async function fetchPersonalConversationKey() {
     const response = await fetch(
@@ -58,17 +72,21 @@ export default function useConversation(
     const { personalConversationKey, hmacKey } = jsonResponse.data;
 
     const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(privateKey);
-
     const asymmetricService = new AsymmetricEncryptionService();
-    const decryptedKey = await asymmetricService.decrypt(
+
+    const decryptedSymmetricKey = await asymmetricService.decrypt(
       personalConversationKey,
       importedPrivateKey
     );
+    const decryptedHmacKey = await asymmetricService.decrypt(hmacKey, importedPrivateKey);
 
     const sharedSecretAsCryptoKey = await SymmetricEncryptionService.createCryptoKeyFromString(
-      decryptedKey
+      decryptedSymmetricKey
     );
-    const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(hmacKey);
+    const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(
+      decryptedHmacKey
+    );
+
     symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(sharedSecretAsCryptoKey);
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
@@ -88,16 +106,20 @@ export default function useConversation(
     }
 
     const decryptedMessageList = jsonResponse.data.messages.map(async message => {
-      if (!symmetricEncryptionServiceRef.current) {
-        return;
-      }
-      if (!messageAuthenticationServiceRef.current) {
+      if (
+        !symmetricEncryptionServiceRef.current ||
+        !messageAuthenticationServiceRef.current ||
+        !userId
+      ) {
         return;
       }
 
       const decryptedMessage: DecryptedMessagePayload = {
         senderId: userId,
-        verified: await messageAuthenticationServiceRef.current.verify(message.mac, message.data.m),
+        verified: await messageAuthenticationServiceRef.current.verify(
+          message.hmac,
+          message.data.m
+        ),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
       };
 
@@ -141,10 +163,11 @@ export default function useConversation(
     const encryptedMessage: EncryptedMessagePayload = {
       senderId: message.senderId,
       data,
-      mac: await messageAuthenticationServiceRef.current.sign(data.m),
+      hmac: await messageAuthenticationServiceRef.current.sign(data.m),
+      conversationId: parseInt(conversationId),
     };
 
-    socket.emit(SocketEvent.MESSAGE, encryptedMessage, conversationId);
+    socket.emit(SocketEvent.MESSAGE, encryptedMessage);
   }
 
   return [messages, sendMessage];

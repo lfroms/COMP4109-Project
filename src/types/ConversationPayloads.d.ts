@@ -7,3 +7,7 @@ interface ParticipantMetadata {
   personalConversationKey: string;
   hmac: string;
 }
+
+interface ConversationsSubscribePayload {
+  userId: number;
+}
