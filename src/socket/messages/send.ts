@@ -27,7 +27,7 @@ export default function send(io: Server, socket: Socket) {
     message.sender = user;
     message.content = JSON.stringify(payload.data);
     message.conversation = conversation;
-    message.hmac = payload.mac;
+    message.hmac = payload.hmac;
     await message.save();
 
     io.in(payload.conversationId.toString()).emit(SocketEvent.MESSAGE, payload);

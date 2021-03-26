@@ -36,7 +36,7 @@ export default function useConversation(
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
         verified: await messageAuthenticationServiceRef.current?.verify(
-          message.mac,
+          message.hmac,
           message.data.m
         ),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
@@ -111,7 +111,10 @@ export default function useConversation(
 
       const decryptedMessage: DecryptedMessagePayload = {
         senderId: userId,
-        verified: await messageAuthenticationServiceRef.current.verify(message.mac, message.data.m),
+        verified: await messageAuthenticationServiceRef.current.verify(
+          message.hmac,
+          message.data.m
+        ),
         text: await symmetricEncryptionServiceRef.current.decrypt(message.data),
       };
 
@@ -155,7 +158,7 @@ export default function useConversation(
     const encryptedMessage: EncryptedMessagePayload = {
       senderId: message.senderId,
       data,
-      mac: await messageAuthenticationServiceRef.current.sign(data.m),
+      hmac: await messageAuthenticationServiceRef.current.sign(data.m),
       conversationId: parseInt(conversationId),
     };
 

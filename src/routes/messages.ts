@@ -33,7 +33,7 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
     const encryptedMessage: EncryptedMessagePayload = {
       senderId: message.sender.id,
       data: encryptedPayload,
-      mac: message.hmac,
+      hmac: message.hmac,
       conversationId: parseInt(conversationId),
     };
 
