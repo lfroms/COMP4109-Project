@@ -1,15 +1,18 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import { Conversation } from '../models/Conversation';
 import { User } from '../models/User';
 
 const router = Router();
+
+router.get('/api/conversations/:id', authenticate);
+router.get('/api/conversations', authenticate);
 
 interface ConversationParams {
   id: number;
 }
 
 type ConversationResponse = API.JSONResponse<API.ConversationResponse>;
-
 router.get<ConversationParams, ConversationResponse>(
   '/api/conversations/:id',
   async (request, response) => {

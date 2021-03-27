@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import { PersonalConversationKey } from '../models/PersonalConversationKey';
 
 const router = Router();
+
+router.get('/api/personal-conversation-key', authenticate);
 
 interface Params {
   userId: number;

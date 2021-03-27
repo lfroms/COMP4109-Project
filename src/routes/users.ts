@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import { User } from '../models/User';
 
 const router = Router();
+
+router.get('/api/users', authenticate);
 
 interface Request {
   ids: string;

@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import { Message } from '../models/Message';
 
 const router = Router();
+
+router.get('/api/messages', authenticate);
 
 interface Request {
   conversationId: string;
