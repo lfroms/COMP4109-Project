@@ -1,4 +1,4 @@
-import useUserSession from "./useUserSession";
+import useUserSession from './useUserSession';
 
 export default function useAuthenticatedFetch() {
   const { token, signOut } = useUserSession();
@@ -8,7 +8,7 @@ export default function useAuthenticatedFetch() {
       method,
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : undefined)
+        ...(token ? { Authorization: `Bearer ${token}` } : undefined),
       },
       body,
     });
@@ -19,7 +19,7 @@ export default function useAuthenticatedFetch() {
       signOut();
     }
 
-    return jsonResponse
+    return jsonResponse;
   }
 
   return authenticatedFetch;

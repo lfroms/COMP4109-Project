@@ -22,12 +22,9 @@ interface Props {
 
 export default function UserSessionContextProvider({ children }: Props) {
   const router = useRouter();
-  const { set: setToken, remove: clearToken, value: token } = useSessionStorage(
-    StorageKey.TOKEN
-  );
+  const { set: setToken, remove: clearToken, value: token } = useSessionStorage(StorageKey.TOKEN);
 
   async function signIn(username: string, password: string) {
-    // await fetch token from api using username and password
     const response = await fetch(`/api/auth`, {
       method: 'POST',
       headers: {
@@ -38,15 +35,12 @@ export default function UserSessionContextProvider({ children }: Props) {
 
     const jsonResponse = (await response.json()) as API.JSONResponse<API.AuthenticationResponse>;
 
-    // if jsonresponse.error != null, return false
     if (!jsonResponse.data || jsonResponse.error != null) {
       return false;
     }
 
-    // setToken(jsonResponse.data.token?)
     setToken(jsonResponse.data.token);
 
-    // Replace all fetch with one in useConversation.ts
     console.log(username);
     console.log(password);
 

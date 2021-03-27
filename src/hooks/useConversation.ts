@@ -86,7 +86,10 @@ export default function useConversation(
   }
 
   async function fetchMessages() {
-    const response = await authenticatedFetch<API.MessagesResponse>(`/api/messages?conversationId=${conversationId}`, 'GET');
+    const response = await authenticatedFetch<API.MessagesResponse>(
+      `/api/messages?conversationId=${conversationId}`,
+      'GET',
+    );
 
     if (!response.data) {
       return;

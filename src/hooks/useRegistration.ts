@@ -1,4 +1,4 @@
-import { useAuthenticatedFetch } from "hooks";
+import { useAuthenticatedFetch } from 'hooks';
 
 interface RegistrationParams {
   name: string;
@@ -13,7 +13,11 @@ export default function useRegistration() {
   async function register(options: RegistrationParams) {
     const body: API.RegistrationRequestBody = { ...options };
 
-    const response = await authenticatedFetch<API.UserResponse>('/api/register', 'POST', JSON.stringify(body));
+    const response = await authenticatedFetch<API.UserResponse>(
+      '/api/register',
+      'POST',
+      JSON.stringify(body),
+    );
 
     return response;
   }

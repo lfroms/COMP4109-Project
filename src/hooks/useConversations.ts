@@ -9,7 +9,10 @@ export default function useConversations(userId: number) {
   const [conversations, setConversations] = useState<API.Conversation[]>([]);
 
   async function fetchConversations() {
-    const response = await authenticatedFetch<API.ConversationsResponse>(`/api/conversations?userId=${userId}`, 'GET');
+    const response = await authenticatedFetch<API.ConversationsResponse>(
+      `/api/conversations?userId=${userId}`,
+      'GET',
+    );
 
     if (!response.data?.conversations) {
       return;
