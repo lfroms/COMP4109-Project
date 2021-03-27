@@ -6,7 +6,7 @@ export default function useFetchUsers() {
   async function fetchUsers(userIds: number[]) {
     const response = await authenticatedFetch<API.UsersResponse>(
       `/api/users?ids=${userIds.join(',')}`,
-      'GET',
+      'GET'
     );
 
     if (!response.data?.users) {

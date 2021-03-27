@@ -7,12 +7,12 @@ import { useRouter } from 'next/router';
 interface UserSession {
   userId?: number;
   token?: string;
-  signIn: (username: string, password: string) => void;
+  signIn: (username: string, password: string) => Promise<boolean>;
   signOut: () => void;
 }
 
 export const UserSessionContext = createContext<UserSession>({
-  signIn: () => {},
+  signIn: () => new Promise(() => {}),
   signOut: () => {},
 });
 
@@ -41,10 +41,6 @@ export default function UserSessionContextProvider({ children }: Props) {
 
     setToken(jsonResponse.data.token);
 
-    console.log(username);
-    console.log(password);
-
-    //return boolean?
     return true;
   }
 

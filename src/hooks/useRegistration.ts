@@ -16,7 +16,7 @@ export default function useRegistration() {
     const response = await authenticatedFetch<API.UserResponse>(
       '/api/register',
       'POST',
-      JSON.stringify(body),
+      JSON.stringify(body)
     );
 
     return response;

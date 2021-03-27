@@ -11,7 +11,7 @@ export default function useConversations(userId: number) {
   async function fetchConversations() {
     const response = await authenticatedFetch<API.ConversationsResponse>(
       `/api/conversations?userId=${userId}`,
-      'GET',
+      'GET'
     );
 
     if (!response.data?.conversations) {

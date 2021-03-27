@@ -14,13 +14,13 @@ export default function Index() {
 
   async function handleLogin() {
     setPrivateKey(pemContents);
-    await signIn(userId, password);
-    // Check if succeed (boolean?)
-    /*if (!result) {
+    const result = await signIn(userId, password);
+
+    if (!result) {
       console.log('Error logging in');
 
       return;
-    }*/
+    }
 
     router.push('/conversations');
   }
