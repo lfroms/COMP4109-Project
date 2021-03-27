@@ -67,4 +67,15 @@ declare namespace API {
     password: string;
     publicKey: string;
   }
+
+  // AUTHENTICATION
+
+  export interface AuthenticationRequestBody {
+    username: string;
+    password: string;
+  }
+
+  export interface AuthenticationResponse {
+    token: string;
+  }
 }

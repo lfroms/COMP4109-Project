@@ -8,7 +8,6 @@ type Response = API.JSONResponse<API.UserResponse>;
 
 router.post<any, Response, Request>('/api/register', async (request, response) => {
   const { name, password, publicKey } = request.body;
-  console.log(request.body);
 
   if (!name || !password || !publicKey) {
     return response.status(400).json({
