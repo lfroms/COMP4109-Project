@@ -1,19 +1,16 @@
+import { useAuthenticatedFetch } from "hooks";
+
 export default function useFetchUsers() {
+  const authenticatedFetch = useAuthenticatedFetch();
+
   async function fetchUsers(userIds: number[]) {
-    const response = await fetch(`/api/users?ids=${userIds.join(',')}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await authenticatedFetch<API.UsersResponse>(`/api/users?ids=${userIds.join(',')}`, 'GET');
 
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.UsersResponse>;
-
-    if (!jsonResponse.data?.users) {
+    if (!response.data?.users) {
       return;
     }
 
-    return jsonResponse.data.users;
+    return response.data.users;
   }
 
   return fetchUsers;

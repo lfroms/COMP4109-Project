@@ -6,15 +6,22 @@ import { StorageKey } from 'types';
 export default function Index() {
   const router = useRouter();
   const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
   const { signIn } = useUserSession();
 
   const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
-  function handleLogin() {
+  async function handleLogin() {
     setPrivateKey(pemContents);
-    signIn(userId, '');
-    // TODO: Further login implementation.
+    await signIn(userId, password);
+    // Check if succeed (boolean?)
+    /*if (!result) {
+      console.log('Error logging in');
+
+      return;
+    }*/
+
     router.push('/conversations');
   }
 
@@ -49,11 +56,18 @@ export default function Index() {
             handleLogin();
           }}
         >
-          <label>user id (from db):</label>
+          <label>username:</label>
           <input
             type="text"
             onChange={elem => setUserId(elem.currentTarget.value)}
             value={userId}
+          />
+          <br />
+          <label>password:</label>
+          <input
+            type="text"
+            onChange={elem => setPassword(elem.currentTarget.value)}
+            value={password}
           />
           <br />
           <label>private key (pem):</label>

@@ -1,9 +1,12 @@
 import React, { createContext } from 'react';
 import { useSessionStorage } from 'hooks';
 import { StorageKey } from 'types';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useRouter } from 'next/router';
 
 interface UserSession {
   userId?: number;
+  token?: string;
   signIn: (username: string, password: string) => void;
   signOut: () => void;
 }
@@ -18,21 +21,49 @@ interface Props {
 }
 
 export default function UserSessionContextProvider({ children }: Props) {
-  const { set: setUserId, remove: clearUserId, value: userId } = useSessionStorage(
-    StorageKey.USER_ID
+  const router = useRouter();
+  const { set: setToken, remove: clearToken, value: token } = useSessionStorage(
+    StorageKey.TOKEN
   );
 
-  function signIn(username: string, password: string) {
-    setUserId(username);
+  async function signIn(username: string, password: string) {
+    // await fetch token from api using username and password
+    const response = await fetch(`/api/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const jsonResponse = (await response.json()) as API.JSONResponse<API.AuthenticationResponse>;
+
+    // if jsonresponse.error != null, return false
+    if (!jsonResponse.data || jsonResponse.error != null) {
+      return false;
+    }
+
+    // setToken(jsonResponse.data.token?)
+    setToken(jsonResponse.data.token);
+
+    // Replace all fetch with one in useConversation.ts
+    console.log(username);
     console.log(password);
+
+    //return boolean?
+    return true;
   }
 
   function signOut() {
-    clearUserId();
+    clearToken();
+    router.push('/');
   }
 
+  const decodedJwt = token ? jwtDecode<JwtPayload>(token).sub : undefined;
+  const userId = decodedJwt ? parseInt(decodedJwt) : undefined;
+
   return (
-    <UserSessionContext.Provider value={{ userId, signIn, signOut }}>
+    <UserSessionContext.Provider value={{ token, userId, signIn, signOut }}>
       {children}
     </UserSessionContext.Provider>
   );
