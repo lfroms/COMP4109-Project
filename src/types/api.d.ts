@@ -15,6 +15,7 @@ declare namespace API {
   export interface User {
     id: number;
     name: string;
+    username: string;
     publicKey: string;
   }
 
@@ -64,6 +65,7 @@ declare namespace API {
 
   export interface RegistrationRequestBody {
     name: string;
+    username: string;
     password: string;
     publicKey: string;
   }
