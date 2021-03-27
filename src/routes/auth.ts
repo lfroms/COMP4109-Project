@@ -20,7 +20,7 @@ router.post<any, Response, Request>('/api/auth', async (request, response) => {
     });
   }
 
-  const user = await User.findOne({ username, password });
+  const user = await User.findOne({ username, password }, { select: ['id', 'username', 'name'] });
 
   if (!user) {
     return response.status(500).json({
@@ -32,7 +32,11 @@ router.post<any, Response, Request>('/api/auth', async (request, response) => {
     });
   }
 
-  const token = JsonWebTokenService.generateToken({ sub: user.id, username });
+  const token = JsonWebTokenService.generateToken({
+    sub: user.id,
+    username: user.username,
+    name: user.name,
+  });
 
   return response.json({
     data: {
