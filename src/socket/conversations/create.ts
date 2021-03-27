@@ -54,14 +54,14 @@ async function savePersonalConversationKey(
 }
 
 async function notifyParticipant(user: User, conversation: Conversation, io: Server) {
-  const connections = await Connection.find({ user: user });
+  const connections = await Connection.find({ user });
 
   if (!connections) {
     return;
   }
 
   connections.forEach(connection => {
-    io.to(connection.socketId).emit(SocketEvent.NOTIFY_CONVERSATIONS);
+    io.sockets.sockets.get(connection.socketId)?.emit(SocketEvent.NOTIFY_CONVERSATIONS);
     io.sockets.sockets.get(connection.socketId)?.join(conversation.id.toString());
   });
 }

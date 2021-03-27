@@ -35,11 +35,7 @@ export default function SocketContextProvider({ children }: Props) {
       socket.close();
       socket.io.opts.query['token'] = token;
       socket.open();
-    }
-  }, [token]);
 
-  useEffect(() => {
-    socket.on(SocketEvent.CONNECT, () => {
       if (!userId) {
         return;
       }
@@ -49,8 +45,8 @@ export default function SocketContextProvider({ children }: Props) {
       };
 
       socket.emit(SocketEvent.REGISTER_CONNECTION, connectionRegistrationPayload);
-    });
-  }, []);
+    }
+  }, [token]);
 
   return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 }
