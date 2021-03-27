@@ -43,7 +43,6 @@ declare namespace API {
   export interface Conversation {
     id: number;
     participants: User[];
-    messages: Message[];
   }
 
   export interface ConversationResponse {

@@ -7,7 +7,7 @@ const router = Router();
 router.get('/api/users', authenticate);
 
 interface Request {
-  ids: string;
+  ids?: string;
 }
 
 type Response = API.JSONResponse<API.UsersResponse>;

@@ -34,7 +34,15 @@ router.get<ConversationParams, ConversationResponse>(
 
     return response.json({
       data: {
-        conversation,
+        conversation: {
+          id: conversation.id,
+          participants: conversation.participants.map(participant => ({
+            id: participant.id,
+            name: participant.name,
+            username: participant.username,
+            publicKey: participant.publicKey,
+          })),
+        },
       },
       error: null,
     });
@@ -42,7 +50,7 @@ router.get<ConversationParams, ConversationResponse>(
 );
 
 interface UserConversationsParams {
-  userId: number;
+  userId?: number;
 }
 
 type UserConversationsResponse = API.JSONResponse<API.ConversationsResponse>;
@@ -62,7 +70,9 @@ router.get<any, UserConversationsResponse, any, UserConversationsParams>(
       });
     }
 
-    const user = await User.findOne(userId, { relations: ['conversations'] });
+    const user = await User.findOne(userId, {
+      relations: ['conversations', 'conversations.participants'],
+    });
 
     if (!user) {
       return response.status(404).json({
@@ -76,7 +86,15 @@ router.get<any, UserConversationsResponse, any, UserConversationsParams>(
 
     return response.json({
       data: {
-        conversations: user.conversations,
+        conversations: user.conversations.map(conversation => ({
+          id: conversation.id,
+          participants: conversation.participants.map(participant => ({
+            id: participant.id,
+            name: participant.name,
+            username: participant.username,
+            publicKey: participant.publicKey,
+          })),
+        })),
       },
       error: null,
     });

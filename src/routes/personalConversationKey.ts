@@ -7,8 +7,8 @@ const router = Router();
 router.get('/api/personal-conversation-key', authenticate);
 
 interface Params {
-  userId: number;
-  conversationId: number;
+  userId?: number;
+  conversationId?: number;
 }
 
 type Response = API.JSONResponse<API.PersonalConversationKeyResponse>;
