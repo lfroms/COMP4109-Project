@@ -31,12 +31,10 @@ export default function SocketContextProvider({ children }: Props) {
       return;
     }
 
-    if (socket.io.opts.query) {
-      if (socket.io.opts.query['token'] !== token) {
-        socket.close();
-        socket.io.opts.query['token'] = token;
-        socket.open();
-      }
+    if (socket.io.opts.query && socket.io.opts.query['token'] !== token) {
+      socket.close();
+      socket.io.opts.query['token'] = token;
+      socket.open();
     }
   }, [token]);
 
