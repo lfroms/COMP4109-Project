@@ -5,5 +5,6 @@ export enum SocketEvent {
   SUBSCRIBE_TO_CONVERSATIONS = 'conversations:subscribe',
   REGISTER_CONNECTION = 'connections:register',
   DEREGISTER_CONNECTION = 'connections:deregister',
+  CONNECT = 'connect',
   DISCONNECT = 'disconnect',
 }

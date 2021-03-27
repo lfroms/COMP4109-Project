@@ -1,5 +1,6 @@
 interface RegistrationParams {
   name: string;
+  username: string;
   password: string;
   publicKey: string;
 }

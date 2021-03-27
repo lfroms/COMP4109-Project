@@ -1,4 +1,5 @@
 declare namespace API {
+  // GENERAL
   export interface JSONError {
     code: number;
     message: string;
@@ -9,33 +10,13 @@ declare namespace API {
     error: JSONError | null;
   }
 
+  // USERS
+
   export interface User {
     id: number;
     name: string;
+    username: string;
     publicKey: string;
-  }
-
-  export interface Message {
-    content: string;
-    hmac: string;
-  }
-
-  export interface MessagesResponse {
-    messages: EncryptedMessagePayload[];
-  }
-
-  export interface Conversation {
-    id: number;
-    participants: User[];
-    messages: Message[];
-  }
-
-  export interface ConversationResponse {
-    conversation: Conversation;
-  }
-
-  export interface UserConversationResponse {
-    conversations: Conversation[];
   }
 
   export interface UserResponse {
@@ -46,14 +27,56 @@ declare namespace API {
     users: User[];
   }
 
+  // MESSAGES
+
+  export interface Message {
+    content: string;
+    hmac: string;
+  }
+
+  export interface MessagesResponse {
+    messages: EncryptedMessagePayload[];
+  }
+
+  // CONVERSATIONS
+
+  export interface Conversation {
+    id: number;
+    participants: User[];
+  }
+
+  export interface ConversationResponse {
+    conversation: Conversation;
+  }
+
+  export interface ConversationsResponse {
+    conversations: Conversation[];
+  }
+
+  // PERSONAL CONVERSATION KEY
+
   export interface PersonalConversationKeyResponse {
     personalConversationKey: string;
     hmacKey: string;
   }
 
+  // REGISTRATION
+
   export interface RegistrationRequestBody {
     name: string;
+    username: string;
     password: string;
     publicKey: string;
+  }
+
+  // AUTHENTICATION
+
+  export interface AuthenticationRequestBody {
+    username: string;
+    password: string;
+  }
+
+  export interface AuthenticationResponse {
+    token: string;
   }
 }

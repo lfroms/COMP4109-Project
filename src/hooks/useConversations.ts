@@ -14,7 +14,7 @@ export default function useConversations(userId: number) {
       },
     });
 
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.UserConversationResponse>;
+    const jsonResponse = (await response.json()) as API.JSONResponse<API.ConversationsResponse>;
 
     if (!jsonResponse.data?.conversations) {
       return;

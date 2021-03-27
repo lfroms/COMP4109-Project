@@ -4,12 +4,12 @@ import { Frame, SocketContextProvider, UserSessionProvider } from 'components';
 
 export default function App({ Component, pageProps, router }: AppProps) {
   return (
-    <SocketContextProvider>
-      <UserSessionProvider>
+    <UserSessionProvider>
+      <SocketContextProvider>
         <Frame visible={router.pathname !== '/' && router.pathname !== '/register'}>
           <Component {...pageProps} />
         </Frame>
-      </UserSessionProvider>
-    </SocketContextProvider>
+      </SocketContextProvider>
+    </UserSessionProvider>
   );
 }

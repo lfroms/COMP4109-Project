@@ -6,14 +6,16 @@ import { AsymmetricEncryptionService, PrivateKeyTransportService } from 'service
 export default function Register() {
   const router = useRouter();
   const register = useRegistration();
-  const [userId, setUserId] = useState('');
+
+  const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   async function handleRegister() {
     const keyPair = await AsymmetricEncryptionService.generateKeyPair();
     const publicKey = await AsymmetricEncryptionService.convertPublicKeyToString(keyPair.publicKey);
 
-    const { data, error } = await register({ name: userId, password: password, publicKey });
+    const { data, error } = await register({ name: fullName, username, password, publicKey });
 
     if (!data || error) {
       console.error('An error occured while trying to register.', error);
@@ -29,8 +31,19 @@ export default function Register() {
     <div>
       <h1>Register</h1>
       <div>
-        <label>user name: </label>
-        <input type="text" onChange={elem => setUserId(elem.currentTarget.value)} value={userId} />
+        <label>Full Name:</label>
+        <input
+          type="text"
+          onChange={element => setFullName(element.currentTarget.value)}
+          value={fullName}
+        />
+        <br />
+        <label>Username:</label>
+        <input
+          type="text"
+          onChange={element => setUsername(element.currentTarget.value)}
+          value={username}
+        />
         <br />
         <label>Password:</label>
         <input

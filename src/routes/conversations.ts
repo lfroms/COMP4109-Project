@@ -1,15 +1,18 @@
 import { Router } from 'express';
+import { authenticate } from '../middleware';
 import { Conversation } from '../models/Conversation';
 import { User } from '../models/User';
 
 const router = Router();
+
+router.get('/api/conversations/:id', authenticate);
+router.get('/api/conversations', authenticate);
 
 interface ConversationParams {
   id: number;
 }
 
 type ConversationResponse = API.JSONResponse<API.ConversationResponse>;
-
 router.get<ConversationParams, ConversationResponse>(
   '/api/conversations/:id',
   async (request, response) => {
@@ -31,7 +34,15 @@ router.get<ConversationParams, ConversationResponse>(
 
     return response.json({
       data: {
-        conversation,
+        conversation: {
+          id: conversation.id,
+          participants: conversation.participants.map(participant => ({
+            id: participant.id,
+            name: participant.name,
+            username: participant.username,
+            publicKey: participant.publicKey,
+          })),
+        },
       },
       error: null,
     });
@@ -39,10 +50,10 @@ router.get<ConversationParams, ConversationResponse>(
 );
 
 interface UserConversationsParams {
-  userId: number;
+  userId?: number;
 }
 
-type UserConversationsResponse = API.JSONResponse<API.UserConversationResponse>;
+type UserConversationsResponse = API.JSONResponse<API.ConversationsResponse>;
 
 router.get<any, UserConversationsResponse, any, UserConversationsParams>(
   '/api/conversations',
@@ -59,7 +70,9 @@ router.get<any, UserConversationsResponse, any, UserConversationsParams>(
       });
     }
 
-    const user = await User.findOne(userId, { relations: ['conversations'] });
+    const user = await User.findOne(userId, {
+      relations: ['conversations', 'conversations.participants'],
+    });
 
     if (!user) {
       return response.status(404).json({
@@ -73,7 +86,15 @@ router.get<any, UserConversationsResponse, any, UserConversationsParams>(
 
     return response.json({
       data: {
-        conversations: user.conversations,
+        conversations: user.conversations.map(conversation => ({
+          id: conversation.id,
+          participants: conversation.participants.map(participant => ({
+            id: participant.id,
+            name: participant.name,
+            username: participant.username,
+            publicKey: participant.publicKey,
+          })),
+        })),
       },
       error: null,
     });

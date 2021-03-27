@@ -6,7 +6,18 @@ import { Server } from 'http';
 import { createConnection } from 'typeorm';
 import 'reflect-metadata';
 
-import { conversations, messages, personalConversationKey, ping, register, users } from './routes';
+import dotenv from 'dotenv';
+dotenv.config();
+
+import {
+  auth,
+  conversations,
+  messages,
+  personalConversationKey,
+  ping,
+  register,
+  users,
+} from './routes';
 
 import { logRequest } from './middleware';
 import { initialize as initializeSocketConnection } from './socket';
@@ -35,6 +46,7 @@ app
     server.use(ping);
     server.use(register);
     server.use(users);
+    server.use(auth);
 
     // Clear old WebSocket connections
     Connection.clear();
