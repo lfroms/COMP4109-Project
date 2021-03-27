@@ -1,15 +1,15 @@
-import React, { createContext, useEffect, useRef } from 'react';
+import React, { createContext, useEffect } from 'react';
 import socketIOClient from 'socket.io-client';
 import { useUserSession } from 'hooks';
 import { SocketEvent } from 'types';
 
 const SOCKET_SERVER_URL = 'http://localhost:3000';
 
-const defaultSocket = socketIOClient(SOCKET_SERVER_URL, {
+const socket = socketIOClient(SOCKET_SERVER_URL, {
   autoConnect: false,
-  reconnectionAttempts: 5,
+  query: {},
 });
-export const SocketContext = createContext<SocketIOClient.Socket>(defaultSocket);
+export const SocketContext = createContext<SocketIOClient.Socket>(socket);
 
 interface Props {
   children: React.ReactNode;
@@ -17,41 +17,40 @@ interface Props {
 
 export default function SocketContextProvider({ children }: Props) {
   const { userId } = useUserSession();
-  const socketClientRef = useRef<SocketIOClient.Socket>(defaultSocket);
 
   useEffect(() => {
     if (!userId) {
-      socketClientRef.current?.close();
+      socket.emit(SocketEvent.DEREGISTER_CONNECTION);
+
+      if (socket.io.opts.query) {
+        socket.io.opts.query['token'] = undefined;
+      }
+
+      socket.close();
 
       return;
     }
 
-    if (socketClientRef.current) {
-      socketClientRef.current.close();
+    if (socket.io.opts.query) {
+      socket.close();
+      socket.io.opts.query['token'] = userId;
+      socket.open();
     }
+  }, [userId]);
 
-    socketClientRef.current = socketIOClient(SOCKET_SERVER_URL, {
-      autoConnect: true,
-      reconnectionAttempts: 5,
-      query: {
-        token: userId,
-      },
+  useEffect(() => {
+    socket.on(SocketEvent.CONNECT, () => {
+      if (!userId) {
+        return;
+      }
+
+      const connectionRegistrationPayload: ConnectionRegisterPayload = {
+        userId,
+      };
+
+      socket.emit(SocketEvent.REGISTER_CONNECTION, connectionRegistrationPayload);
     });
-  }, [userId]);
+  }, []);
 
-  useEffect(() => {
-    if (!userId) {
-      return;
-    }
-
-    const connectionRegistrationPayload: ConnectionRegisterPayload = {
-      userId,
-    };
-
-    socketClientRef.current.emit(SocketEvent.REGISTER_CONNECTION, connectionRegistrationPayload);
-  }, [userId]);
-
-  return (
-    <SocketContext.Provider value={socketClientRef.current}>{children}</SocketContext.Provider>
-  );
+  return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 }
