@@ -1,5 +1,6 @@
 import { Server } from 'http';
 import { Socket, Server as SocketIOServer } from 'socket.io';
+import { authenticateSocket } from '../middleware';
 
 import {
   create as createConversation,
@@ -11,7 +12,7 @@ import { deregister as deregisterConnection, register as registerConnection } fr
 export default function initialize(server: Server) {
   const io = new SocketIOServer(server);
 
-  io.on('connection', (socket: Socket) => {
+  io.use(authenticateSocket).on('connection', (socket: Socket) => {
     registerConnection(io, socket);
     deregisterConnection(io, socket);
 

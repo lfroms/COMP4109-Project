@@ -1,6 +1,6 @@
-import React, { createContext, useEffect } from 'react';
-import { useSessionStorage, useSocketContext } from 'hooks';
-import { SocketEvent, StorageKey } from 'types';
+import React, { createContext } from 'react';
+import { useSessionStorage } from 'hooks';
+import { StorageKey } from 'types';
 
 interface UserSession {
   userId?: number;
@@ -18,22 +18,9 @@ interface Props {
 }
 
 export default function UserSessionContextProvider({ children }: Props) {
-  const socket = useSocketContext();
   const { set: setUserId, remove: clearUserId, value: userId } = useSessionStorage(
     StorageKey.USER_ID
   );
-
-  useEffect(() => {
-    if (!userId) {
-      return;
-    }
-
-    const connectionRegistrationPayload: ConnectionRegisterPayload = {
-      userId,
-    };
-
-    socket.emit(SocketEvent.REGISTER_CONNECTION, connectionRegistrationPayload);
-  }, [userId]);
 
   function signIn(username: string, password: string) {
     setUserId(username);
@@ -41,7 +28,6 @@ export default function UserSessionContextProvider({ children }: Props) {
   }
 
   function signOut() {
-    socket.emit(SocketEvent.DEREGISTER_CONNECTION);
     clearUserId();
   }
 

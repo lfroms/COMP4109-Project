@@ -27,12 +27,16 @@ export default class JsonWebTokenService {
       );
     }
 
-    const decodedToken = jwt.verify(token, secret) as JwtPayload | undefined;
+    try {
+      const decodedToken = jwt.verify(token, secret) as JwtPayload | undefined;
 
-    if (!decodedToken) {
+      if (!decodedToken) {
+        return undefined;
+      }
+
+      return decodedToken;
+    } catch {
       return undefined;
     }
-
-    return decodedToken;
   }
 }
