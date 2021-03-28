@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { SocketEvent, StorageKey } from 'types';
-import { useKeyStore, useSocketContext, useUserSession } from 'hooks';
+import { useAuthenticatedFetch, useKeyStore, useSocketContext, useUserSession } from 'hooks';
 import {
   AsymmetricEncryptionService,
   MessageAuthenticationService,
@@ -14,6 +14,7 @@ export default function useConversation(
   const socket = useSocketContext();
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
   const { userId } = useUserSession();
+  const authenticatedFetch = useAuthenticatedFetch();
   const symmetricEncryptionServiceRef = useRef<SymmetricEncryptionService>();
   const messageAuthenticationServiceRef = useRef<MessageAuthenticationService>();
   const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
@@ -51,25 +52,18 @@ export default function useConversation(
   }, [conversationId]);
 
   async function fetchPersonalConversationKey() {
-    const response = await fetch(
+    const response = await authenticatedFetch<API.PersonalConversationKeyResponse>(
       `/api/personal-conversation-key?userId=${userId}&conversationId=${conversationId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
+      'GET'
     );
 
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.PersonalConversationKeyResponse>;
-
-    if (!jsonResponse.data?.personalConversationKey) {
+    if (!response.data?.personalConversationKey) {
       console.error('Could not fetch personal conversation key for this conversation.');
 
       return;
     }
 
-    const { personalConversationKey, hmacKey } = jsonResponse.data;
+    const { personalConversationKey, hmacKey } = response.data;
 
     const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(privateKey);
     const asymmetricService = new AsymmetricEncryptionService();
@@ -92,20 +86,16 @@ export default function useConversation(
   }
 
   async function fetchMessages() {
-    const response = await fetch(`/api/messages?conversationId=${conversationId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await authenticatedFetch<API.MessagesResponse>(
+      `/api/messages?conversationId=${conversationId}`,
+      'GET'
+    );
 
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.MessagesResponse>;
-
-    if (!jsonResponse.data) {
+    if (!response.data) {
       return;
     }
 
-    const decryptedMessageList = jsonResponse.data.messages.map(async message => {
+    const decryptedMessageList = response.data.messages.map(async message => {
       if (
         !symmetricEncryptionServiceRef.current ||
         !messageAuthenticationServiceRef.current ||

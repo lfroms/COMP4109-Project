@@ -1,26 +1,24 @@
+import { useAuthenticatedFetch } from 'hooks';
 import { useEffect, useState } from 'react';
 import { SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
 export default function useConversations(userId: number) {
   const socket = useSocketContext();
+  const authenticatedFetch = useAuthenticatedFetch();
   const [conversations, setConversations] = useState<API.Conversation[]>([]);
 
   async function fetchConversations() {
-    const response = await fetch(`/api/conversations?userId=${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await authenticatedFetch<API.ConversationsResponse>(
+      `/api/conversations?userId=${userId}`,
+      'GET'
+    );
 
-    const jsonResponse = (await response.json()) as API.JSONResponse<API.ConversationsResponse>;
-
-    if (!jsonResponse.data?.conversations) {
+    if (!response.data?.conversations) {
       return;
     }
 
-    setConversations(jsonResponse.data.conversations);
+    setConversations(response.data.conversations);
   }
 
   function createConversation(payload: ConversationCreatePayload) {

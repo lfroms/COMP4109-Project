@@ -1,3 +1,5 @@
+import { useAuthenticatedFetch } from 'hooks';
+
 interface RegistrationParams {
   name: string;
   username: string;
@@ -5,21 +7,19 @@ interface RegistrationParams {
   publicKey: string;
 }
 
-type Response = API.JSONResponse<API.UserResponse>;
-
 export default function useRegistration() {
+  const authenticatedFetch = useAuthenticatedFetch();
+
   async function register(options: RegistrationParams) {
     const body: API.RegistrationRequestBody = { ...options };
 
-    const response = await fetch('/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+    const response = await authenticatedFetch<API.UserResponse>(
+      '/api/register',
+      'POST',
+      JSON.stringify(body)
+    );
 
-    return (await response.json()) as Response;
+    return response;
   }
 
   return register;

@@ -1,15 +1,18 @@
 import React, { createContext } from 'react';
 import { useSessionStorage } from 'hooks';
 import { StorageKey } from 'types';
+import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { useRouter } from 'next/router';
 
 interface UserSession {
   userId?: number;
-  signIn: (username: string, password: string) => void;
+  token?: string;
+  signIn: (username: string, password: string) => Promise<boolean>;
   signOut: () => void;
 }
 
 export const UserSessionContext = createContext<UserSession>({
-  signIn: () => {},
+  signIn: () => new Promise(() => {}),
   signOut: () => {},
 });
 
@@ -18,21 +21,39 @@ interface Props {
 }
 
 export default function UserSessionContextProvider({ children }: Props) {
-  const { set: setUserId, remove: clearUserId, value: userId } = useSessionStorage(
-    StorageKey.USER_ID
-  );
+  const router = useRouter();
+  const { set: setToken, remove: clearToken, value: token } = useSessionStorage(StorageKey.TOKEN);
 
-  function signIn(username: string, password: string) {
-    setUserId(username);
-    console.log(password);
+  async function signIn(username: string, password: string) {
+    const response = await fetch(`/api/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const jsonResponse = (await response.json()) as API.JSONResponse<API.AuthenticationResponse>;
+
+    if (!jsonResponse.data || jsonResponse.error != null) {
+      return false;
+    }
+
+    setToken(jsonResponse.data.token);
+
+    return true;
   }
 
   function signOut() {
-    clearUserId();
+    clearToken();
+    router.push('/');
   }
 
+  const decodedJwt = token ? jwtDecode<JwtPayload>(token).sub : undefined;
+  const userId = decodedJwt ? parseInt(decodedJwt) : undefined;
+
   return (
-    <UserSessionContext.Provider value={{ userId, signIn, signOut }}>
+    <UserSessionContext.Provider value={{ token, userId, signIn, signOut }}>
       {children}
     </UserSessionContext.Provider>
   );

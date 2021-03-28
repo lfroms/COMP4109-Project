@@ -1,3 +1,4 @@
+export { default as useAuthenticatedFetch } from './useAuthenticatedFetch';
 export { default as useConversation } from './useConversation';
 export { default as useConversations } from './useConversations';
 export { default as useSocketContext } from './useSocketContext';
