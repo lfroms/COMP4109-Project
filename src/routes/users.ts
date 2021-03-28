@@ -15,7 +15,7 @@ type Response = API.JSONResponse<API.UsersResponse>;
 router.get<any, Response, any, Request>('/api/users', async (request, response) => {
   const { ids } = request.query;
 
-  const users = (ids && !ids.split(',')) ? await User.findByIds(ids.split(',')) : await User.find();
+  const users = (ids && ids.split(',')) ? await User.findByIds(ids.split(',')) : await User.find();
 
   return response.json({
     data: {
