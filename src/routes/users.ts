@@ -15,6 +15,16 @@ type Response = API.JSONResponse<API.UsersResponse>;
 router.get<any, Response, any, Request>('/api/users', async (request, response) => {
   const { ids } = request.query;
 
+  if (ids && !ids.split(',')) {
+    return response.status(400).json({
+      data: null,
+      error: {
+        code: 400,
+        message: 'Malformed query parameters',
+      },
+    });
+  }
+
   const users = ids ? await User.findByIds(ids.split(',')) : await User.find();
 
   return response.json({
