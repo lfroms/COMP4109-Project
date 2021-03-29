@@ -4,3 +4,24 @@
   display: flex;
   align-items: center;
 }
+
+.LoginFormLayout {
+  display: flex;
+  flex-direction: row;
+  margin-top: 40px;
+
+  & > :last-child {
+    flex: 0 0 30%;
+  }
+}
+
+.LeftLoginSection {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  flex: 1;
+
+  & > :not(:last-child) {
+    margin-bottom: 20px;
+  }
+}

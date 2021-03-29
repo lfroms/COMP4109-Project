@@ -11,7 +11,7 @@ export default function SideCard({ title, children }: Props) {
   return (
     <div className={styles.SideCard}>
       <h1 className={styles.Title}>{title}</h1>
-      {children}
+      <div>{children}</div>
     </div>
   );
 }

@@ -52,7 +52,17 @@ export default function Index() {
   return (
     <div className={styles.Index}>
       <SideCard title="Log in">
-        <TextField placeholder="Username" value={userId} onChange={setUserId} />
+        <div className={styles.LoginFormLayout}>
+          <div className={styles.LeftLoginSection}>
+            <TextField placeholder="Username" value={userId} onChange={setUserId} />
+            <TextField
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={setPassword}
+            />
+          </div>
+        </div>
       </SideCard>
     </div>
   );
