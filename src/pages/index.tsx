@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
+import { SideCard, Text } from 'components';
+
+import styles from './index.module.scss';
 
 export default function Index() {
   const router = useRouter();
@@ -47,8 +50,16 @@ export default function Index() {
   }
 
   return (
+    <div className={styles.Index}>
+      <SideCard title="Log in">
+        <Text>Hello</Text>
+      </SideCard>
+    </div>
+  );
+
+  return (
     <div>
-      <h1>Login</h1>
+      <Text type="title">Login</Text>
       <div>
         <form
           onSubmit={e => {

@@ -1,0 +1,18 @@
+@import 'normalize';
+
+html,
+body {
+  background: #212b36;
+  color: #fff;
+  height: 100%;
+  width: 100%;
+}
+
+#__next {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
