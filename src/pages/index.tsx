@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
-import { Button, Link, SideCard, TextField } from 'components';
+import { Button, Dropzone, Link, SideCard, TextField } from 'components';
 
 import styles from './index.module.scss';
 
@@ -62,6 +62,8 @@ export default function Index() {
               onChange={setPassword}
             />
           </div>
+
+          <Dropzone />
         </div>
 
         <div className={styles.ButtonRow}>

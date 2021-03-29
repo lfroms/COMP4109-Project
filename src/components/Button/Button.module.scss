@@ -6,6 +6,7 @@
   background: color(ink);
 
   @include text-style-body;
+  line-height: normal;
   font-weight: 500;
   color: color(white);
   outline: none;
