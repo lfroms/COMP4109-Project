@@ -1,3 +1,6 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
 .LoginFormLayout {
   display: flex;
   flex-direction: row;
@@ -17,4 +20,10 @@
   & > :not(:last-child) {
     margin-bottom: 20px;
   }
+}
+
+.PasswordIncorrectText {
+  margin: 0;
+  @include text-style-body;
+  color: color(ink-lighter);
 }

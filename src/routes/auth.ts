@@ -23,7 +23,7 @@ router.post<any, Response, Request>('/api/auth', async (request, response) => {
   const user = await User.findOne({ username, password }, { select: ['id', 'username', 'name'] });
 
   if (!user) {
-    return response.status(500).json({
+    return response.status(400).json({
       data: null,
       error: {
         code: 400,
