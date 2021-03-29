@@ -6,3 +6,4 @@ export * from './UserMenu';
 export * from './SideCard';
 export * from './TextField';
 export * from './Button';
+export * from './Spinner';

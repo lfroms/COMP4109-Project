@@ -11,10 +11,12 @@
 
   &.light {
     border-top-color: color(white);
+    border-right-color: color(white);
   }
 
   &.subdued {
     border-top-color: color(sky-light);
+    border-right-color: color(sky-light);
   }
 }
 

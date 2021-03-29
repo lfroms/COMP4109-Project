@@ -64,7 +64,9 @@ export default function Index() {
           </div>
         </div>
 
-        <Button onClick={handleLogin}>Log in</Button>
+        <Button onClick={handleLogin} loading>
+          Log in
+        </Button>
       </SideCard>
     </div>
   );

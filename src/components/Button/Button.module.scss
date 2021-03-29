@@ -13,10 +13,19 @@
   border: none;
   cursor: pointer;
 
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
   &.inverted {
     background: color(white);
     border: 3px solid color(ink);
     color: color(ink);
+    padding: 13px 19px;
+
+    &:hover {
+      background: darken($color: color(white), $amount: 5%);
+    }
   }
 
   &:hover {
@@ -24,4 +33,11 @@
   }
 
   transition: background 0.2s ease;
+}
+
+.Spinner {
+  margin-right: 8px;
+  margin-left: -4px;
+  margin-top: -10px;
+  margin-bottom: -10px;
 }
