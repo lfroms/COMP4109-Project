@@ -5,12 +5,17 @@ import classNames from 'classnames';
 import styles from './Dropzone.module.scss';
 
 interface Props {
+  currentFile?: File;
   onAcceptFile: (file: File) => void;
 }
 
-export default function Dropzone({ onAcceptFile }: Props) {
+export default function Dropzone({ currentFile, onAcceptFile }: Props) {
   return (
-    <ReactDropzone onDrop={acceptedFiles => onAcceptFile(acceptedFiles[0])} maxFiles={1}>
+    <ReactDropzone
+      onDrop={acceptedFiles => onAcceptFile(acceptedFiles[0])}
+      maxFiles={1}
+      accept=".pem"
+    >
       {({ getRootProps, getInputProps, isDragActive }) => (
         <div
           {...getRootProps()}
@@ -26,7 +31,7 @@ export default function Dropzone({ onAcceptFile }: Props) {
             />
           </svg>
 
-          <span className={styles.Text}>Drop private key</span>
+          <span className={styles.Text}>{currentFile ? currentFile.name : 'Drop private key'}</span>
         </div>
       )}
     </ReactDropzone>

@@ -11,26 +11,12 @@ export default function Index() {
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
+  const [file, setFile] = useState<File | undefined>(undefined);
   const { signIn } = useUserSession();
 
   const [pemContents, setPemContents] = useState<string | undefined>(undefined);
 
   async function handleLogin() {
-    setPrivateKey(pemContents);
-    const result = await signIn(userId, password);
-
-    if (!result) {
-      console.log('Error logging in');
-
-      return;
-    }
-
-    router.push('/conversations');
-  }
-
-  function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-
     if (!file) {
       return;
     }
@@ -43,6 +29,17 @@ export default function Index() {
     };
 
     fileReader.readAsText(file);
+
+    setPrivateKey(pemContents);
+    const result = await signIn(userId, password);
+
+    if (!result) {
+      console.log('Error logging in');
+
+      return;
+    }
+
+    router.push('/conversations');
   }
 
   async function handleRegister() {
@@ -63,7 +60,7 @@ export default function Index() {
             />
           </div>
 
-          <Dropzone />
+          <Dropzone currentFile={file} onAcceptFile={setFile} />
         </div>
 
         <div className={styles.ButtonRow}>
