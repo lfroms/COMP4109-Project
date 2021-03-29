@@ -2,108 +2,69 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
-import { Button, Dropzone, Link, SideCard, TextField } from 'components';
+import { Button, Dropzone, LandingLayout, Link, TextField } from 'components';
 
 import styles from './index.module.scss';
 
 export default function Index() {
   const router = useRouter();
-  const [userId, setUserId] = useState('');
+
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [pemFile, setPemFile] = useState<File | undefined>(undefined);
+
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
-  const [file, setFile] = useState<File | undefined>(undefined);
   const { signIn } = useUserSession();
 
-  const [pemContents, setPemContents] = useState<string | undefined>(undefined);
-
   async function handleLogin() {
-    if (!file) {
+    if (!pemFile) {
       return;
     }
 
     const fileReader = new FileReader();
 
-    fileReader.onload = () => {
+    fileReader.onload = async () => {
       // It can only be a string since we are using readAsText.
-      setPemContents(fileReader.result as string);
+      const pemContents = fileReader.result as string;
+
+      const result = await signIn(userName, password);
+
+      if (!result) {
+        console.log('Error logging in');
+
+        return;
+      }
+
+      setPrivateKey(pemContents);
+      router.push('/conversations');
     };
 
-    fileReader.readAsText(file);
-
-    setPrivateKey(pemContents);
-    const result = await signIn(userId, password);
-
-    if (!result) {
-      console.log('Error logging in');
-
-      return;
-    }
-
-    router.push('/conversations');
-  }
-
-  async function handleRegister() {
-    router.push('/register');
+    fileReader.readAsText(pemFile);
   }
 
   return (
-    <div className={styles.Index}>
-      <SideCard title="Log in">
-        <div className={styles.LoginFormLayout}>
-          <div className={styles.LeftLoginSection}>
-            <TextField placeholder="Username" value={userId} onChange={setUserId} />
-            <TextField
-              placeholder="Password"
-              type="password"
-              value={password}
-              onChange={setPassword}
-            />
-          </div>
-
-          <Dropzone currentFile={file} onAcceptFile={setFile} />
-        </div>
-
-        <div className={styles.ButtonRow}>
+    <LandingLayout
+      title="Log in"
+      buttonRow={
+        <>
           <Button onClick={handleLogin}>Log in</Button>
-
           <Link to="/register">Create a new account</Link>
-        </div>
-      </SideCard>
-    </div>
-  );
-
-  return (
-    <div>
-      <div>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
-          <label>username:</label>
-          <input
-            type="text"
-            onChange={elem => setUserId(elem.currentTarget.value)}
-            value={userId}
-          />
-          <br />
-          <label>password:</label>
-          <input
-            type="text"
-            onChange={elem => setPassword(elem.currentTarget.value)}
+        </>
+      }
+    >
+      <div className={styles.LoginFormLayout}>
+        <div className={styles.LeftLoginSection}>
+          <TextField placeholder="Username" value={userName} onChange={setUserName} />
+          <TextField
+            placeholder="Password"
+            type="password"
             value={password}
+            onChange={setPassword}
           />
-          <br />
-          <label>private key (pem):</label>
-          <input type="file" name="privateKey" onChange={handleChangeFile} />
+        </div>
 
-          <br />
-          <br />
-          <input type="submit" value="Login" />
-          <input type="button" value="Register" onClick={handleRegister} />
-        </form>
+        <Dropzone currentFile={pemFile} onAcceptFile={setPemFile} />
       </div>
-    </div>
+    </LandingLayout>
   );
 }

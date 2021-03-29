@@ -28,11 +28,25 @@
     transition: transform 0.2s ease;
   }
 
+  &:hover {
+    $color: darken(
+      $color: color(sky-dark),
+      $amount: 10%,
+    );
+
+    border: 2px dashed $color;
+
+    * {
+      color: $color;
+      fill: $color;
+    }
+  }
+
   &.active {
     border-color: color(ink-lighter);
 
     & > svg {
-      transform: translateY(-5px);
+      transform: translate(0, -2px);
     }
 
     * {

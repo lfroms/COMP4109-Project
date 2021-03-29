@@ -6,7 +6,7 @@ import styles from './Dropzone.module.scss';
 
 interface Props {
   currentFile?: File;
-  onAcceptFile: (file: File) => void;
+  onAcceptFile: (file?: File) => void;
 }
 
 export default function Dropzone({ currentFile, onAcceptFile }: Props) {
