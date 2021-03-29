@@ -1,0 +1,27 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.Button {
+  padding: 16px 22px;
+  background: color(ink);
+
+  @include text-style-body;
+  font-weight: 500;
+  color: color(white);
+  outline: none;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+
+  &.inverted {
+    background: color(white);
+    border: 3px solid color(ink);
+    color: color(ink);
+  }
+
+  &:hover {
+    background: darken($color: color(ink), $amount: 10%);
+  }
+
+  transition: background 0.2s ease;
+}

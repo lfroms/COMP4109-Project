@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
-import { SideCard, TextField } from 'components';
+import { Button, SideCard, TextField } from 'components';
 
 import styles from './index.module.scss';
 
@@ -63,6 +63,8 @@ export default function Index() {
             />
           </div>
         </div>
+
+        <Button onClick={handleLogin}>Log in</Button>
       </SideCard>
     </div>
   );
