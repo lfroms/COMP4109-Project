@@ -25,3 +25,13 @@
     margin-bottom: 20px;
   }
 }
+
+.ButtonRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  & > :not(:last-child) {
+    margin-right: 20px;
+  }
+}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
-import { Button, SideCard, TextField } from 'components';
+import { Button, Link, SideCard, TextField } from 'components';
 
 import styles from './index.module.scss';
 
@@ -64,9 +64,11 @@ export default function Index() {
           </div>
         </div>
 
-        <Button onClick={handleLogin} loading>
-          Log in
-        </Button>
+        <div className={styles.ButtonRow}>
+          <Button onClick={handleLogin}>Log in</Button>
+
+          <Link to="/register">Create a new account</Link>
+        </div>
       </SideCard>
     </div>
   );

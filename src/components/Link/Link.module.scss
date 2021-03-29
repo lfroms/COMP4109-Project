@@ -1,0 +1,16 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.Link {
+  a {
+    @include text-style-body;
+    color: color(ink-light);
+    text-decoration: none;
+
+    &:hover {
+      color: color(ink);
+    }
+
+    transition: color 0.2s ease;
+  }
+}
