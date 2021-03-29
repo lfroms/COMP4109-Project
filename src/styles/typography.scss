@@ -1,0 +1,102 @@
+$font-data: (
+  caption: (
+    size: 13px,
+    line-height: 16px,
+    letter-spacing: -0.04px,
+    weight: 700,
+  ),
+  body: (
+    size: 17px,
+    line-height: 25px,
+    letter-spacing: -0.22px,
+    weight: 400,
+  ),
+  heading: (
+    size: 30px,
+    line-height: 42px,
+    letter-spacing: -0.64px,
+    weight: 700,
+  ),
+);
+
+@function font-size($style) {
+  $fetched-value: map-get($font-data, $style, size);
+
+  @if type-of($fetched-value) {
+    @return rem($fetched-value);
+  } @else {
+    @error 'Font size `#{$style} - #{$variant}` not found. Available font sizes: #{available-names($font-data)}';
+  }
+}
+
+@function line-height($style) {
+  $fetched-value: map-get($font-data, $style, line-height);
+
+  @if type-of($fetched-value) {
+    @return rem($fetched-value);
+  } @else {
+    @error 'Line height `#{$style} - #{$variant}` not found. Available line heights: #{available-names($font-data)}';
+  }
+}
+
+@function letter-spacing($style) {
+  $fetched-value: map-get($font-data, $style, letter-spacing);
+
+  @if type-of($fetched-value) {
+    @return rem($fetched-value);
+  } @else {
+    @error 'Letter spacing `#{$style} - #{$variant}` not found. Available line heights: #{available-names($font-data)}';
+  }
+}
+
+@function font-weight($style) {
+  $fetched-value: map-get($font-data, $style, weight);
+
+  @if type-of($fetched-value) {
+    @return $fetched-value;
+  } @else {
+    @error 'Font weight `#{$style} - #{$variant}` not found. Available line heights: #{available-names($font-data)}';
+  }
+}
+
+@mixin text-style-caption {
+  font-size: font-size(caption);
+  font-weight: font-weight(caption);
+  line-height: line-height(caption);
+  letter-spacing: letter-spacing(caption);
+}
+
+@mixin text-style-heading {
+  font-size: font-size(heading);
+  font-weight: font-weight(heading);
+  line-height: line-height(heading);
+  letter-spacing: letter-spacing(heading);
+}
+
+@mixin text-style-body {
+  text-transform: initial;
+
+  font-size: font-size(body);
+  font-weight: font-weight(body);
+  line-height: line-height(body);
+  letter-spacing: letter-spacing(body);
+}
+
+@mixin text-breakword {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@mixin print-hidden {
+  @media print {
+    // stylelint-disable-next-line declaration-no-important
+    display: none !important;
+  }
+}

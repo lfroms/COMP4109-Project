@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text } from 'components';
 
 import styles from './SideCard.module.scss';
 
@@ -11,7 +10,7 @@ interface Props {
 export default function SideCard({ title, children }: Props) {
   return (
     <div className={styles.SideCard}>
-      <Text type="title">{title}</Text>
+      <h1 className={styles.Title}>{title}</h1>
       {children}
     </div>
   );

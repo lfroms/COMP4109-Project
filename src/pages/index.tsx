@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
-import { SideCard, Text } from 'components';
+import { SideCard, TextField } from 'components';
 
 import styles from './index.module.scss';
 
@@ -52,14 +52,13 @@ export default function Index() {
   return (
     <div className={styles.Index}>
       <SideCard title="Log in">
-        <Text>Hello</Text>
+        <TextField placeholder="Username" value={userId} onChange={setUserId} />
       </SideCard>
     </div>
   );
 
   return (
     <div>
-      <Text type="title">Login</Text>
       <div>
         <form
           onSubmit={e => {
