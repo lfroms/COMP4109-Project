@@ -17,6 +17,10 @@
 .Content {
   flex: 1;
   background: color(white);
+  max-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
 
   * {
     color: color(black);

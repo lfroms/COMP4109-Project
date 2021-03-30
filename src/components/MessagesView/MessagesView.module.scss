@@ -1,0 +1,22 @@
+.MessagesViewContainer {
+  flex: 1;
+  overflow-y: scroll;
+  padding: 30px;
+}
+
+.MessagesView {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.MessageRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 10px;
+
+  &.fromCurrentUser {
+    justify-content: flex-end;
+  }
+}

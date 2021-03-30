@@ -2,9 +2,10 @@
 @import 'styles/colors';
 
 .ConversationHeader {
-  padding: 30px;
+  padding: 27px;
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
 
   h1 {
@@ -25,5 +26,6 @@
   p {
     @include text-style-body;
     color: color(sky-dark);
+    margin: 0;
   }
 }

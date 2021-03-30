@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation, useUserSession } from 'hooks';
-import { ComposerBar, ConversationHeader } from 'components';
+import { ComposerBar, ConversationHeader, MessagesView } from 'components';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -30,21 +30,16 @@ export default function Conversation() {
   }
 
   return (
-    <div>
+    <>
       <ConversationHeader conversationId={conversationId} sharedSecret={sharedSecret} />
 
-      {messages.map((message, index) => (
-        <p key={`message-${index}`}>
-          {message.senderId}: {message.text}{' '}
-          {message.verified ? 'verified signature' : 'invalid signature'}
-        </p>
-      ))}
+      <MessagesView messages={messages} currentUserId={userId} />
 
       <ComposerBar
         value={currentMessageText}
         onChange={setCurrentMessageText}
         onSend={handleSendButtonClick}
       />
-    </div>
+    </>
   );
 }

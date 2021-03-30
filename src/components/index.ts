@@ -15,3 +15,5 @@ export * from './Avatar';
 export * from './Icon';
 export * from './ConversationHeader';
 export * from './ComposerBar';
+export * from './MessageBubble';
+export * from './MessagesView';
