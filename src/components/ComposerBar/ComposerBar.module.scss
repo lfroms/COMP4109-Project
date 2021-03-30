@@ -1,0 +1,15 @@
+.ComposerBar {
+  display: flex;
+  flex-direction: row;
+  padding: 30px;
+}
+
+.TextField {
+  flex: 1;
+
+  margin-right: 20px;
+
+  > * {
+    width: 100%;
+  }
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation, useUserSession } from 'hooks';
-import { ConversationHeader } from 'components';
+import { ComposerBar, ConversationHeader } from 'components';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -40,14 +40,11 @@ export default function Conversation() {
         </p>
       ))}
 
-      <input
-        id="msgInput"
-        type="text"
-        onChange={elem => setCurrentMessageText(elem.currentTarget.value)}
-        placeholder="Type a message..."
+      <ComposerBar
         value={currentMessageText}
+        onChange={setCurrentMessageText}
+        onSend={handleSendButtonClick}
       />
-      <button onClick={handleSendButtonClick}>Send</button>
     </div>
   );
 }

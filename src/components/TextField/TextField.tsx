@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, KeyboardEvent } from 'react';
 
 import styles from './TextField.module.scss';
 
@@ -9,11 +9,26 @@ interface Props {
   value: string;
   type?: Type;
   onChange: (newValue: string) => void;
+  onEnterKey?: () => void;
 }
 
-export default function TextField({ placeholder, value, type = 'text', onChange }: Props) {
+export default function TextField({
+  placeholder,
+  value,
+  type = 'text',
+  onChange,
+  onEnterKey,
+}: Props) {
   function handleChange(event: ChangeEvent<HTMLInputElement>) {
     onChange(event.currentTarget.value);
+  }
+
+  function handleKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    onEnterKey?.();
   }
 
   return (
@@ -23,6 +38,7 @@ export default function TextField({ placeholder, value, type = 'text', onChange 
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
+      onKeyDown={handleKeyDown}
     />
   );
 }
