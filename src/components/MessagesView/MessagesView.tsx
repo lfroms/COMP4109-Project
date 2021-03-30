@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Avatar, Icon, MessageBubble } from 'components';
+import React, { useEffect, useRef, useState } from 'react';
+import { Avatar, Button, Icon, MessageBubble, Modal, Well } from 'components';
 import classNames from 'classnames';
 
 import styles from './MessagesView.module.scss';
@@ -8,10 +8,20 @@ interface Props {
   currentUserId?: number;
   participants: API.User[];
   messages: DecryptedMessagePayload[];
+  encryptedMessages: EncryptedMessagePayload[];
 }
 
-export default function MessagesView({ currentUserId, participants, messages }: Props) {
+export default function MessagesView({
+  currentUserId,
+  participants,
+  messages,
+  encryptedMessages,
+}: Props) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [selectedMessage, setSelectedMessage] = useState<DecryptedMessagePayload | undefined>(
+    undefined
+  );
+  const [modalVisible, setModalVisible] = useState(false);
 
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,7 +41,14 @@ export default function MessagesView({ currentUserId, participants, messages }: 
     }
 
     const bubbleMarkup = fromCurrentUser ? (
-      <MessageBubble text={message.text} fromSender />
+      <MessageBubble
+        text={message.text}
+        fromSender
+        onClick={() => {
+          setSelectedMessage(message);
+          setModalVisible(true);
+        }}
+      />
     ) : (
       <div className={styles.MessageLayout}>
         <Avatar fullName={participant.name} />
@@ -41,7 +58,14 @@ export default function MessagesView({ currentUserId, participants, messages }: 
             <Icon name={message.verified ? 'verified' : 'unverified'} />
             {message.verified ? 'Verified' : 'Invalid signature'}
           </span>
-          <MessageBubble text={message.text} fromSender={false} />
+          <MessageBubble
+            text={message.text}
+            fromSender={false}
+            onClick={() => {
+              setSelectedMessage(message);
+              setModalVisible(true);
+            }}
+          />
         </div>
       </div>
     );
@@ -53,10 +77,46 @@ export default function MessagesView({ currentUserId, participants, messages }: 
     );
   });
 
+  function handleModalClose() {
+    setModalVisible(false);
+
+    setTimeout(() => setSelectedMessage(undefined), 300);
+  }
+
   return (
-    <div className={styles.MessagesViewContainer}>
-      <div className={styles.MessagesView}>{messagesMarkup}</div>
-      <div ref={messagesEndRef} />
-    </div>
+    <>
+      <div className={styles.MessagesViewContainer}>
+        <div className={styles.MessagesView}>{messagesMarkup}</div>
+        <div ref={messagesEndRef} />
+      </div>
+
+      <Modal
+        open={modalVisible}
+        onRequestClose={handleModalClose}
+        title={`Message Details (${selectedMessage?.text.slice(0, 14)}...)`}
+        actions={<Button onClick={handleModalClose}>Close</Button>}
+      >
+        {(() => {
+          const message = encryptedMessages.find(message => message.id === selectedMessage?.id);
+
+          if (!message) {
+            return null;
+          }
+
+          return (
+            <>
+              <p className={styles.WellLabel}>Ciphertext:</p>
+              <Well>{message.data.m}</Well>
+
+              <p className={styles.WellLabel}>Initialization vector:</p>
+              <Well>{message.data.iv}</Well>
+
+              <p className={styles.WellLabel}>Message authentication code:</p>
+              <Well>{message.hmac}</Well>
+            </>
+          );
+        })()}
+      </Modal>
+    </>
   );
 }

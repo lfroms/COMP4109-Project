@@ -13,7 +13,9 @@ export default function Conversation() {
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId } = router.query as Params;
 
-  const { messages, sendMessage, sharedSecret, participants } = useConversation(conversationId);
+  const { messages, encryptedMessages, sendMessage, sharedSecret, participants } = useConversation(
+    conversationId
+  );
 
   function handleSendButtonClick() {
     if (!userId) {
@@ -32,9 +34,12 @@ export default function Conversation() {
   return (
     <>
       <ConversationHeader participants={participants} sharedSecret={sharedSecret} />
-
-      <MessagesView messages={messages} participants={participants} currentUserId={userId} />
-
+      <MessagesView
+        messages={messages}
+        encryptedMessages={encryptedMessages}
+        participants={participants}
+        currentUserId={userId}
+      />
       <ComposerBar
         value={currentMessageText}
         onChange={setCurrentMessageText}

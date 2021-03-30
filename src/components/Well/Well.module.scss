@@ -1,0 +1,16 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.Well {
+  margin: 0;
+  background: color(sky-light);
+  border-radius: 7px;
+  padding: 14px 22px;
+  border: none;
+  outline: none;
+  word-wrap: break-word;
+
+  color: color(ink-lightest);
+
+  @include text-style-body;
+}

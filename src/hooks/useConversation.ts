@@ -11,6 +11,7 @@ import {
 export default function useConversation(conversationId: string) {
   const socket = useSocketContext();
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
+  const [encryptedMessages, setEncryptedMessages] = useState<EncryptedMessagePayload[]>([]);
   const [participants, setParticipants] = useState<API.User[]>([]);
   const { userId } = useUserSession();
   const authenticatedFetch = useAuthenticatedFetch();
@@ -33,6 +34,8 @@ export default function useConversation(conversationId: string) {
       if (message.conversationId !== parseInt(conversationId)) {
         return;
       }
+
+      setEncryptedMessages(previousMessages => [...previousMessages, message]);
 
       const decryptedMessage: DecryptedMessagePayload = {
         ...message,
@@ -97,6 +100,8 @@ export default function useConversation(conversationId: string) {
       return;
     }
 
+    setEncryptedMessages(response.data.messages);
+
     const decryptedMessageList = response.data.messages.map(async message => {
       if (
         !symmetricEncryptionServiceRef.current ||
@@ -107,6 +112,7 @@ export default function useConversation(conversationId: string) {
       }
 
       const decryptedMessage: DecryptedMessagePayload = {
+        id: message.id,
         senderId: message.senderId,
         verified: await messageAuthenticationServiceRef.current.verify(
           message.hmac,
@@ -172,5 +178,5 @@ export default function useConversation(conversationId: string) {
     socket.emit(SocketEvent.MESSAGE, encryptedMessage);
   }
 
-  return { messages, sendMessage, sharedSecret, participants };
+  return { messages, encryptedMessages, sendMessage, sharedSecret, participants };
 }

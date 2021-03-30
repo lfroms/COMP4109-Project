@@ -17,3 +17,4 @@ export * from './ConversationHeader';
 export * from './ComposerBar';
 export * from './MessageBubble';
 export * from './MessagesView';
+export * from './Well';
