@@ -11,3 +11,9 @@
     fill: color(ink);
   }
 }
+
+.Subdued {
+  & > svg {
+    fill: color(sky-dark);
+  }
+}

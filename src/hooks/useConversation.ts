@@ -8,9 +8,7 @@ import {
   SymmetricEncryptionService,
 } from 'services';
 
-export default function useConversation(
-  conversationId: string
-): [DecryptedMessagePayload[], (m: DecryptedMessagePayload) => void] {
+export default function useConversation(conversationId: string) {
   const socket = useSocketContext();
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
   const { userId } = useUserSession();
@@ -18,6 +16,7 @@ export default function useConversation(
   const symmetricEncryptionServiceRef = useRef<SymmetricEncryptionService>();
   const messageAuthenticationServiceRef = useRef<MessageAuthenticationService>();
   const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
+  const [sharedSecret, setSharedSecret] = useState<string | undefined>();
 
   useEffect(() => {
     if (!conversationId) {
@@ -80,6 +79,8 @@ export default function useConversation(
     const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(
       decryptedHmacKey
     );
+
+    setSharedSecret(decryptedSymmetricKey);
 
     symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(sharedSecretAsCryptoKey);
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
@@ -160,5 +161,5 @@ export default function useConversation(
     socket.emit(SocketEvent.MESSAGE, encryptedMessage);
   }
 
-  return [messages, sendMessage];
+  return { messages, sendMessage, sharedSecret };
 }

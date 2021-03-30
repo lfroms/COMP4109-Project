@@ -1,4 +1,8 @@
 export default function createParticipantNamesList(participants: API.User[]) {
+  if (!participants.length) {
+    return '';
+  }
+
   const names = participants.map(participant => {
     const parts = participant.name.split(' ');
 

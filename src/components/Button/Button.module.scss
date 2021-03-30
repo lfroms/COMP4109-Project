@@ -55,9 +55,10 @@
     }
   }
 
-  & > svg {
+  & svg {
     margin-left: -6px;
     margin-right: 10px;
+    margin-bottom: -3px;
   }
 
   transition: background 0.2s ease;
