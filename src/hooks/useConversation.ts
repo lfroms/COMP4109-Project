@@ -11,6 +11,7 @@ import {
 export default function useConversation(conversationId: string) {
   const socket = useSocketContext();
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
+  const [participants, setParticipants] = useState<API.User[]>([]);
   const { userId } = useUserSession();
   const authenticatedFetch = useAuthenticatedFetch();
   const symmetricEncryptionServiceRef = useRef<SymmetricEncryptionService>();
@@ -122,12 +123,22 @@ export default function useConversation(conversationId: string) {
     setMessages(decryptedMessages.filter(Boolean) as DecryptedMessagePayload[]);
   }
 
+  async function fetchParticipants() {
+    const response = await authenticatedFetch<API.ConversationResponse>(
+      `/api/conversations/${conversationId}`,
+      'GET'
+    );
+
+    setParticipants(response.data?.conversation.participants ?? []);
+  }
+
   async function fetchData() {
     if (!conversationId) {
       return;
     }
 
     setMessages([]);
+    fetchParticipants();
     await fetchPersonalConversationKey();
     await fetchMessages();
   }
@@ -161,5 +172,5 @@ export default function useConversation(conversationId: string) {
     socket.emit(SocketEvent.MESSAGE, encryptedMessage);
   }
 
-  return { messages, sendMessage, sharedSecret };
+  return { messages, sendMessage, sharedSecret, participants };
 }

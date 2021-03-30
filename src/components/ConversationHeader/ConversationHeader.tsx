@@ -1,36 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { createParticipantNamesList } from 'helpers';
 import { Icon } from 'components';
 
 import styles from './ConversationHeader.module.scss';
-import { useAuthenticatedFetch } from 'hooks';
 
 interface Props {
-  conversationId?: string;
+  participants: API.User[];
   sharedSecret?: string;
 }
 
-export default function ConversationHeader({ conversationId, sharedSecret }: Props) {
-  const [participants, setParticipants] = useState<API.User[]>([]);
-  const authenticatedFetch = useAuthenticatedFetch();
-
-  async function fetchParticipants(conversationId: string) {
-    const response = await authenticatedFetch<API.ConversationResponse>(
-      `/api/conversations/${conversationId}`,
-      'GET'
-    );
-
-    setParticipants(response.data?.conversation.participants ?? []);
-  }
-
-  useEffect(() => {
-    if (!conversationId) {
-      return;
-    }
-
-    fetchParticipants(conversationId);
-  }, [conversationId]);
-
+export default function ConversationHeader({ participants, sharedSecret }: Props) {
   return (
     <div className={styles.ConversationHeader}>
       <h1>{createParticipantNamesList(participants)}</h1>

@@ -9,9 +9,11 @@
   justify-content: center;
   align-items: center;
 
-  @include text-style-body;
-  color: color(white);
-  font-weight: 700;
+  & > span {
+    @include text-style-body;
+    color: color(white);
+    font-weight: 700;
+  }
 
   &.small {
     width: 42px;
