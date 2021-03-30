@@ -12,6 +12,7 @@ export default function Index() {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [pemFile, setPemFile] = useState<File | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
 
   const [errorModalVisible, setErrorModalVisible] = useState(false);
 
@@ -23,6 +24,7 @@ export default function Index() {
       return;
     }
 
+    setLoading(true);
     const fileReader = new FileReader();
 
     fileReader.onload = async () => {
@@ -38,7 +40,11 @@ export default function Index() {
       }
 
       setPrivateKey(pemContents);
-      router.push('/conversations');
+
+      setTimeout(() => {
+        setLoading(false);
+        router.push('/conversations');
+      }, 700);
     };
 
     fileReader.readAsText(pemFile);
@@ -50,7 +56,9 @@ export default function Index() {
         title="Log in"
         buttonRow={
           <>
-            <Button onClick={handleLogin}>Log in</Button>
+            <Button onClick={handleLogin} loading={loading}>
+              Log in
+            </Button>
             <Link to="/register">Create a new account</Link>
           </>
         }

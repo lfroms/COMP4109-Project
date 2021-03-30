@@ -10,11 +10,11 @@ export default class PrivateKeyTransportService {
     this.privateKey = privateKey;
   }
 
-  public async downloadAsFile() {
+  public async downloadAsFile(fileName: string) {
     const exportedKey = await window.crypto.subtle.exportKey('pkcs8', this.privateKey);
 
     const fileContents = this.createPemString(exportedKey);
-    this.downloadPlaintextFile(fileContents);
+    this.downloadPlaintextFile(fileContents, fileName);
   }
 
   public static createCryptoKeyFromPem(string: string) {
@@ -43,10 +43,10 @@ export default class PrivateKeyTransportService {
 
   /** Creates a temporary HTML element linking to a download of a plaintext file.
    * When called, the plaintext file is downloaded by the browser. */
-  private downloadPlaintextFile(contents: string) {
+  private downloadPlaintextFile(contents: string, fileName: string) {
     const element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(contents));
-    element.setAttribute('download', 'private_key.pem');
+    element.setAttribute('download', `${fileName}.pem`);
 
     element.style.display = 'none';
     document.body.appendChild(element);
