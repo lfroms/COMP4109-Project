@@ -11,3 +11,4 @@ export * from './Link';
 export * from './Dropzone';
 export * from './LandingLayout';
 export * from './Modal';
+export * from './Avatar';

@@ -7,11 +7,14 @@ $theme-data: (
   sky-light: #f4f6f8,
   sky-dark: #c4cdd5,
   red: #de3618,
+  red-light: #fead9a,
   green-dark: #108043,
   green-light: #bbe5b3,
   orange-light: #ffc58b,
   indigo-light: #b3bcf5,
+  blue-light: #b4e1fa,
   white: #ffffff,
+  black: #000000,
 );
 
 @function color($key) {
