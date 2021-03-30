@@ -10,7 +10,6 @@ export default function UserMenu() {
   const fetchUsers = useFetchUsers();
   const { userId, fullName, signOut } = useUserSession();
   const [publicKey, setPublicKey] = useState('');
-  const [publicKeyModalVisible, setPublicKeyModalVisible] = useState(false);
 
   function handleLogOut() {
     signOut();
@@ -37,14 +36,7 @@ export default function UserMenu() {
 
   return (
     <div className={styles.UserMenu}>
-      <Avatar
-        fullName={fullName ?? 'User'}
-        onClick={() => setPublicKeyModalVisible(true)}
-        onRequestModalClose={() => setPublicKeyModalVisible(false)}
-        publicKey={publicKey}
-        publicKeyModalVisible={publicKeyModalVisible}
-        small
-      />
+      <Avatar fullName={fullName ?? 'User'} publicKey={publicKey} small />
 
       <div className={styles.RightSection}>
         <span className={styles.Name}>{fullName}</span>

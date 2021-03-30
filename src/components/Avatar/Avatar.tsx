@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Button, Modal, Well } from 'components';
 
@@ -8,38 +8,29 @@ interface Props {
   fullName: string;
   publicKey?: string;
   small?: boolean;
-  publicKeyModalVisible?: boolean;
-  onRequestModalClose?: () => void;
-  onClick?: () => void;
 }
 
-export default function Avatar({
-  fullName,
-  small = false,
-  onClick,
-  publicKey,
-  publicKeyModalVisible = false,
-  onRequestModalClose,
-}: Props) {
+export default function Avatar({ fullName, small = false, publicKey }: Props) {
+  const [publicKeyModalVisible, setPublicKeyModalVisible] = useState(false);
   const className = classNames(
     styles.Avatar,
     getClassName(fullName),
     small && styles.small,
-    onClick && styles.clickable
+    publicKey && styles.clickable
   );
 
   return (
     <>
-      <div className={className} onClick={onClick}>
+      <div className={className} onClick={() => setPublicKeyModalVisible(true)}>
         <span>{getInitial(fullName)}</span>
       </div>
 
-      {onClick && onRequestModalClose && publicKey && (
+      {publicKey && (
         <Modal
           open={publicKeyModalVisible}
-          onRequestClose={onRequestModalClose}
+          onRequestClose={() => setPublicKeyModalVisible(false)}
           title={`${fullName}'s details`}
-          actions={<Button onClick={onRequestModalClose}>Close</Button>}
+          actions={<Button onClick={() => setPublicKeyModalVisible(false)}>Close</Button>}
         >
           <>
             <p className={styles.WellLabel}>

@@ -22,7 +22,6 @@ export default function MessagesView({
     undefined
   );
   const [modalVisible, setModalVisible] = useState(false);
-  const [publicKeyModalVisible, setPublicKeyModalVisible] = useState(false);
 
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -52,13 +51,7 @@ export default function MessagesView({
       />
     ) : (
       <div className={styles.MessageLayout}>
-        <Avatar
-          fullName={participant.name}
-          onClick={() => setPublicKeyModalVisible(true)}
-          onRequestModalClose={() => setPublicKeyModalVisible(false)}
-          publicKey={participant.publicKey}
-          publicKeyModalVisible={publicKeyModalVisible}
-        />
+        <Avatar fullName={participant.name} publicKey={participant.publicKey} />
 
         <div className={styles.VerificationLayout}>
           <span>
@@ -84,12 +77,6 @@ export default function MessagesView({
     );
   });
 
-  function handleModalClose() {
-    setModalVisible(false);
-
-    setTimeout(() => setSelectedMessage(undefined), 300);
-  }
-
   return (
     <>
       <div className={styles.MessagesViewContainer}>
@@ -99,9 +86,9 @@ export default function MessagesView({
 
       <Modal
         open={modalVisible}
-        onRequestClose={handleModalClose}
+        onRequestClose={() => setModalVisible(false)}
         title={`Message Details (${selectedMessage?.text.slice(0, 14)}...)`}
-        actions={<Button onClick={handleModalClose}>Close</Button>}
+        actions={<Button onClick={() => setModalVisible(false)}>Close</Button>}
       >
         {(() => {
           const message = encryptedMessages.find(message => message.id === selectedMessage?.id);
