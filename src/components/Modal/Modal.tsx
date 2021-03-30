@@ -1,5 +1,6 @@
 import React from 'react';
 import { default as ReactModal } from 'react-modal';
+import classNames from 'classnames';
 
 import styles from './Modal.module.scss';
 
@@ -8,10 +9,18 @@ interface Props {
   onRequestClose: () => void;
   title: string;
   actions: React.ReactNode;
+  className?: string;
   children: React.ReactNode;
 }
 
-export default function Modal({ open, onRequestClose, title, actions, children }: Props) {
+export default function Modal({
+  open,
+  onRequestClose,
+  title,
+  actions,
+  className,
+  children,
+}: Props) {
   return (
     <ReactModal
       isOpen={open}
@@ -24,7 +33,7 @@ export default function Modal({ open, onRequestClose, title, actions, children }
         beforeClose: styles.beforeClose,
       }}
       className={{
-        base: styles.Modal,
+        base: classNames(styles.Modal, className),
         afterOpen: styles.afterOpen,
         beforeClose: styles.beforeClose,
       }}

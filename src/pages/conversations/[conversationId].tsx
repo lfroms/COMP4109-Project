@@ -18,7 +18,7 @@ export default function Conversation() {
   );
 
   function handleSendButtonClick() {
-    if (!userId) {
+    if (!userId || !currentMessageText) {
       return;
     }
 
