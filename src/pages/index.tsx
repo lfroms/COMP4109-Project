@@ -56,7 +56,11 @@ export default function Index() {
         title="Log in"
         buttonRow={
           <>
-            <Button onClick={handleLogin} loading={loading}>
+            <Button
+              onClick={handleLogin}
+              loading={loading}
+              disabled={!userName || !password || !pemFile}
+            >
               Log in
             </Button>
             <Link to="/register">Create a new account</Link>

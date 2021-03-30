@@ -7,13 +7,28 @@ import styles from './Button.module.scss';
 interface Props {
   inverted?: boolean;
   loading?: boolean;
+  disabled?: boolean;
   onClick: () => void;
   children: string;
 }
 
-export default function Button({ inverted = false, loading = false, onClick, children }: Props) {
+export default function Button({
+  inverted = false,
+  loading = false,
+  disabled = false,
+  onClick,
+  children,
+}: Props) {
   return (
-    <button className={classNames(styles.Button, inverted && styles.inverted)} onClick={onClick}>
+    <button
+      className={classNames(
+        styles.Button,
+        inverted && styles.inverted,
+        disabled && styles.disabled
+      )}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {loading && (
         <span className={styles.Spinner}>
           <Spinner style={inverted ? 'dark' : 'light'} />
