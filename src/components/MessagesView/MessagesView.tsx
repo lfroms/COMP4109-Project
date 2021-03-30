@@ -22,6 +22,7 @@ export default function MessagesView({
     undefined
   );
   const [modalVisible, setModalVisible] = useState(false);
+  const [publicKeyModalVisible, setPublicKeyModalVisible] = useState(false);
 
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -51,7 +52,13 @@ export default function MessagesView({
       />
     ) : (
       <div className={styles.MessageLayout}>
-        <Avatar fullName={participant.name} />
+        <Avatar
+          fullName={participant.name}
+          onClick={() => setPublicKeyModalVisible(true)}
+          onRequestModalClose={() => setPublicKeyModalVisible(false)}
+          publicKey={participant.publicKey}
+          publicKeyModalVisible={publicKeyModalVisible}
+        />
 
         <div className={styles.VerificationLayout}>
           <span>

@@ -39,4 +39,14 @@
   &.orange {
     background: color(orange-light);
   }
+
+  &.clickable {
+    cursor: pointer;
+  }
+}
+
+.WellLabel {
+  @include text-style-body;
+  color: color(ink-lighter);
+  margin: 20px 0 10px 0;
 }

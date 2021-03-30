@@ -1,22 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useUserSession } from 'hooks';
+import { useFetchUsers, useUserSession } from 'hooks';
 import { Avatar } from 'components';
 
 import styles from './UserMenu.module.scss';
 
 export default function UserMenu() {
   const router = useRouter();
-  const { fullName, signOut } = useUserSession();
+  const fetchUsers = useFetchUsers();
+  const { userId, fullName, signOut } = useUserSession();
+  const [publicKey, setPublicKey] = useState('');
+  const [publicKeyModalVisible, setPublicKeyModalVisible] = useState(false);
 
   function handleLogOut() {
     signOut();
     router.replace('/');
   }
 
+  async function fetchUserPublicKey() {
+    if (!userId) {
+      return;
+    }
+
+    const users = await fetchUsers([userId]);
+
+    if (!users) {
+      return;
+    }
+
+    setPublicKey(users[0].publicKey);
+  }
+
+  useEffect(() => {
+    fetchUserPublicKey();
+  }, [userId]);
+
   return (
     <div className={styles.UserMenu}>
-      <Avatar fullName={fullName ?? 'User'} small />
+      <Avatar
+        fullName={fullName ?? 'User'}
+        onClick={() => setPublicKeyModalVisible(true)}
+        onRequestModalClose={() => setPublicKeyModalVisible(false)}
+        publicKey={publicKey}
+        publicKeyModalVisible={publicKeyModalVisible}
+        small
+      />
 
       <div className={styles.RightSection}>
         <span className={styles.Name}>{fullName}</span>

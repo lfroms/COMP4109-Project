@@ -35,6 +35,7 @@ export default function Index() {
 
       if (!result) {
         setErrorModalVisible(true);
+        setLoading(false);
 
         return;
       }
