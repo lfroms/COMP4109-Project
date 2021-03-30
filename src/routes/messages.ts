@@ -28,6 +28,9 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
   const messages = await Message.find({
     where: { conversation: { id: conversationId } },
     relations: ['sender'],
+    order: {
+      id: 'DESC',
+    },
   });
 
   if (!messages) {

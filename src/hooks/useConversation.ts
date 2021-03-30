@@ -106,7 +106,7 @@ export default function useConversation(conversationId: string) {
       }
 
       const decryptedMessage: DecryptedMessagePayload = {
-        senderId: userId,
+        senderId: message.senderId,
         verified: await messageAuthenticationServiceRef.current.verify(
           message.hmac,
           message.data.m
