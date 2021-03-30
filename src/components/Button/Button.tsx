@@ -8,14 +8,16 @@ interface Props {
   inverted?: boolean;
   loading?: boolean;
   disabled?: boolean;
+  darkPrimary?: boolean;
   onClick: () => void;
-  children: string;
+  children: React.ReactNode;
 }
 
 export default function Button({
   inverted = false,
   loading = false,
   disabled = false,
+  darkPrimary = false,
   onClick,
   children,
 }: Props) {
@@ -24,7 +26,8 @@ export default function Button({
       className={classNames(
         styles.Button,
         inverted && styles.inverted,
-        disabled && styles.disabled
+        disabled && styles.disabled,
+        darkPrimary && styles.darkPrimary
       )}
       onClick={onClick}
       disabled={disabled}

@@ -23,6 +23,19 @@
     cursor: default;
   }
 
+  &.darkPrimary {
+    background: color(white);
+    color: color(ink);
+    justify-content: center;
+
+    &:not(:disabled) {
+      &:hover {
+        background: darken($color: color(white), $amount: 15%);
+        color: color(ink);
+      }
+    }
+  }
+
   &.inverted {
     background: color(white);
     border: 3px solid color(ink);
@@ -40,6 +53,11 @@
     &:hover {
       background: darken($color: color(ink), $amount: 10%);
     }
+  }
+
+  & > svg {
+    margin-left: -6px;
+    margin-right: 10px;
   }
 
   transition: background 0.2s ease;

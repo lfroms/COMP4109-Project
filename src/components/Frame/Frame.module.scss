@@ -10,6 +10,8 @@
 
 .SideBar {
   flex: 0 1 343px;
+  display: flex;
+  flex-direction: column;
 }
 
 .Content {

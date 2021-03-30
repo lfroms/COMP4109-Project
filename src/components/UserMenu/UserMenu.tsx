@@ -14,13 +14,9 @@ export default function UserMenu() {
     router.replace('/');
   }
 
-  if (!fullName) {
-    return null;
-  }
-
   return (
     <div className={styles.UserMenu}>
-      <Avatar fullName={fullName} small />
+      <Avatar fullName={fullName ?? 'User'} small />
 
       <div className={styles.RightSection}>
         <span className={styles.Name}>{fullName}</span>
