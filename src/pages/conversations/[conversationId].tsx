@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation, useUserSession } from 'hooks';
+import { ComposerBar, ConversationHeader, MessagesView } from 'components';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -12,10 +13,12 @@ export default function Conversation() {
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId } = router.query as Params;
 
-  const [messages, sendMessage] = useConversation(conversationId);
+  const { messages, encryptedMessages, sendMessage, sharedSecret, participants } = useConversation(
+    conversationId
+  );
 
   function handleSendButtonClick() {
-    if (!userId) {
+    if (!userId || !currentMessageText) {
       return;
     }
 
@@ -29,24 +32,23 @@ export default function Conversation() {
   }
 
   return (
-    <div>
-      <h1>Conversation {conversationId}</h1>
-
-      {messages.map((message, index) => (
-        <p key={`message-${index}`}>
-          {message.senderId}: {message.text}{' '}
-          {message.verified ? 'verified signature' : 'invalid signature'}
-        </p>
-      ))}
-
-      <input
-        id="msgInput"
-        type="text"
-        onChange={elem => setCurrentMessageText(elem.currentTarget.value)}
-        placeholder="Type a message..."
-        value={currentMessageText}
+    <>
+      <ConversationHeader
+        currentUserId={userId ?? 0}
+        participants={participants}
+        sharedSecret={sharedSecret}
       />
-      <button onClick={handleSendButtonClick}>Send</button>
-    </div>
+      <MessagesView
+        messages={messages}
+        encryptedMessages={encryptedMessages}
+        participants={participants}
+        currentUserId={userId}
+      />
+      <ComposerBar
+        value={currentMessageText}
+        onChange={setCurrentMessageText}
+        onSend={handleSendButtonClick}
+      />
+    </>
   );
 }

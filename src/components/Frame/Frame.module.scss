@@ -1,0 +1,28 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.Frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.SideBar {
+  flex: 0 1 343px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Content {
+  flex: 1;
+  background: color(white);
+  max-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  * {
+    color: color(black);
+  }
+}

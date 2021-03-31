@@ -1,0 +1,19 @@
+@import 'styles/colors';
+
+.Light {
+  & > svg {
+    fill: color(sky-light);
+  }
+}
+
+.Dark {
+  & > svg {
+    fill: color(ink);
+  }
+}
+
+.Subdued {
+  & > svg {
+    fill: color(sky-dark);
+  }
+}

@@ -1,4 +1,5 @@
 interface MessagePayload {
+  id?: number;
   senderId: number;
 }
 
@@ -8,7 +9,6 @@ interface EncryptedPayload {
 }
 
 interface EncryptedMessagePayload extends MessagePayload {
-  id?: number;
   conversationId: number;
   data: EncryptedPayload;
   hmac: string;

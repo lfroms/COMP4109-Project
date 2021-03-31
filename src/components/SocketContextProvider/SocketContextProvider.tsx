@@ -3,7 +3,7 @@ import socketIOClient from 'socket.io-client';
 import { useUserSession } from 'hooks';
 import { SocketEvent } from 'types';
 
-const SOCKET_SERVER_URL = 'http://localhost:3000';
+const SOCKET_SERVER_URL = '/';
 
 const socket = socketIOClient(SOCKET_SERVER_URL, {
   autoConnect: false,

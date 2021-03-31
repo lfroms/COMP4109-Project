@@ -28,6 +28,9 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
   const messages = await Message.find({
     where: { conversation: { id: conversationId } },
     relations: ['sender'],
+    order: {
+      id: 'DESC',
+    },
   });
 
   if (!messages) {
@@ -40,19 +43,21 @@ router.get<any, MessagesResponse, any, Request>('/api/messages', async (request,
     });
   }
 
-  const parsedMessages = messages.map(message => {
-    const encryptedPayload = JSON.parse(message.content) as EncryptedPayload;
+  const parsedMessages = messages
+    .map(message => {
+      const encryptedPayload = JSON.parse(message.content) as EncryptedPayload;
 
-    const encryptedMessage: EncryptedMessagePayload = {
-      id: message.id,
-      conversationId: parseInt(conversationId),
-      senderId: message.sender.id,
-      data: encryptedPayload,
-      hmac: message.hmac,
-    };
+      const encryptedMessage: EncryptedMessagePayload = {
+        id: message.id,
+        conversationId: parseInt(conversationId),
+        senderId: message.sender.id,
+        data: encryptedPayload,
+        hmac: message.hmac,
+      };
 
-    return encryptedMessage;
-  });
+      return encryptedMessage;
+    })
+    .reverse();
 
   return response.json({
     data: {

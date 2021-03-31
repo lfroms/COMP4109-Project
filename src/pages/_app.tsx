@@ -2,6 +2,9 @@ import React from 'react';
 import type { AppProps } from 'next/app';
 import { Frame, SocketContextProvider, UserSessionProvider } from 'components';
 
+import '../styles/global.scss';
+import '../fonts/inter/inter.css';
+
 export default function App({ Component, pageProps, router }: AppProps) {
   return (
     <UserSessionProvider>

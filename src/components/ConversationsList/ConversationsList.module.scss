@@ -1,0 +1,82 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.ConversationsList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-top: 24px;
+  padding-right: 30px;
+  overflow-y: auto;
+
+  ul {
+    list-style: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.Actions {
+  display: flex;
+  flex-direction: row;
+  padding: 30px 0 30px 30px;
+
+  > * {
+    flex: 1;
+  }
+}
+
+.ConversationItem {
+  border-radius: 0 7px 7px 0;
+  transition: background 0.2s ease;
+
+  a {
+    width: 100%;
+    display: inline-block;
+    text-decoration: none;
+    @include text-style-body;
+    font-weight: 600;
+    padding: 14px 30px;
+  }
+
+  &:hover {
+    background: darken($color: color(ink), $amount: 2%);
+  }
+
+  &.active {
+    background: color(sky);
+
+    &:hover {
+      background: color(sky);
+    }
+
+    * {
+      color: color(ink);
+    }
+  }
+}
+
+.DropdownSearch {
+  * {
+    color: color(ink);
+  }
+
+  margin-bottom: 100px;
+}
+
+.Modal {
+  min-width: 650px !important;
+}
+
+.ConversationItemIcon {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  margin-right: 10px;
+
+  svg {
+    margin-bottom: -2px;
+  }
+}

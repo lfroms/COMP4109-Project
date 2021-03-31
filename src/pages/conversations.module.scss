@@ -1,0 +1,15 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.Conversations {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    @include text-style-body;
+    color: color(ink-lightest);
+  }
+}

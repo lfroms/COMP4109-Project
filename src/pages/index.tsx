@@ -2,83 +2,95 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useKeyStore, useUserSession } from 'hooks';
 import { StorageKey } from 'types';
+import { Button, Dropzone, LandingLayout, Link, Modal, TextField } from 'components';
+
+import styles from './index.module.scss';
 
 export default function Index() {
   const router = useRouter();
-  const [userId, setUserId] = useState('');
+
+  const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [pemFile, setPemFile] = useState<File | undefined>(undefined);
+  const [loading, setLoading] = useState(false);
+
+  const [errorModalVisible, setErrorModalVisible] = useState(false);
+
   const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
   const { signIn } = useUserSession();
 
-  const [pemContents, setPemContents] = useState<string | undefined>(undefined);
-
   async function handleLogin() {
-    setPrivateKey(pemContents);
-    const result = await signIn(userId, password);
-
-    if (!result) {
-      console.log('Error logging in');
-
+    if (!pemFile) {
       return;
     }
 
-    router.push('/conversations');
-  }
-
-  function handleChangeFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-
-    if (!file) {
-      return;
-    }
-
+    setLoading(true);
     const fileReader = new FileReader();
 
-    fileReader.onload = () => {
+    fileReader.onload = async () => {
       // It can only be a string since we are using readAsText.
-      setPemContents(fileReader.result as string);
+      const pemContents = fileReader.result as string;
+
+      const result = await signIn(userName, password);
+
+      if (!result) {
+        setErrorModalVisible(true);
+        setLoading(false);
+
+        return;
+      }
+
+      setPrivateKey(pemContents);
+
+      setTimeout(() => {
+        setLoading(false);
+        router.push('/conversations');
+      }, 700);
     };
 
-    fileReader.readAsText(file);
-  }
-
-  async function handleRegister() {
-    router.push('/register');
+    fileReader.readAsText(pemFile);
   }
 
   return (
-    <div>
-      <h1>Login</h1>
-      <div>
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-            handleLogin();
-          }}
-        >
-          <label>username:</label>
-          <input
-            type="text"
-            onChange={elem => setUserId(elem.currentTarget.value)}
-            value={userId}
-          />
-          <br />
-          <label>password:</label>
-          <input
-            type="text"
-            onChange={elem => setPassword(elem.currentTarget.value)}
-            value={password}
-          />
-          <br />
-          <label>private key (pem):</label>
-          <input type="file" name="privateKey" onChange={handleChangeFile} />
+    <>
+      <LandingLayout
+        title="Log in"
+        buttonRow={
+          <>
+            <Button
+              onClick={handleLogin}
+              loading={loading}
+              disabled={!userName || !password || !pemFile}
+            >
+              Log in
+            </Button>
+            <Link to="/register">Create a new account</Link>
+          </>
+        }
+      >
+        <div className={styles.LoginFormLayout}>
+          <div className={styles.LeftLoginSection}>
+            <TextField placeholder="Username" value={userName} onChange={setUserName} />
+            <TextField
+              placeholder="Password"
+              type="password"
+              value={password}
+              onChange={setPassword}
+            />
+          </div>
 
-          <br />
-          <br />
-          <input type="submit" value="Login" />
-          <input type="button" value="Register" onClick={handleRegister} />
-        </form>
-      </div>
-    </div>
+          <Dropzone currentFile={pemFile} onAcceptFile={setPemFile} />
+        </div>
+      </LandingLayout>
+
+      <Modal
+        open={errorModalVisible}
+        title="Error"
+        onRequestClose={() => setErrorModalVisible(false)}
+        actions={<Button onClick={() => setErrorModalVisible(false)}>Close</Button>}
+      >
+        <p className={styles.PasswordIncorrectText}>The username or password is incorrect.</p>
+      </Modal>
+    </>
   );
 }

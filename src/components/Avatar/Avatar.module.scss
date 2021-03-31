@@ -1,0 +1,52 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.Avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > span {
+    @include text-style-body;
+    color: color(white);
+    font-weight: 700;
+  }
+
+  &.small {
+    width: 42px;
+    height: 42px;
+  }
+
+  &.red {
+    background: color(red-light);
+  }
+
+  &.green {
+    background: color(green-light);
+  }
+
+  &.blue {
+    background: color(blue-light);
+  }
+
+  &.indigo {
+    background: color(indigo-light);
+  }
+
+  &.orange {
+    background: color(orange-light);
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+}
+
+.WellLabel {
+  @include text-style-body;
+  color: color(ink-lighter);
+  margin: 20px 0 10px 0;
+}

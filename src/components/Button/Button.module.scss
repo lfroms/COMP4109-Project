@@ -1,0 +1,72 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.Button {
+  padding: 16px 22px;
+  background: color(ink);
+
+  @include text-style-body;
+  line-height: normal;
+  font-weight: 500;
+  color: color(white);
+  outline: none;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  &.darkPrimary {
+    background: color(white);
+    color: color(ink);
+    justify-content: center;
+
+    &:not(:disabled) {
+      &:hover {
+        background: darken($color: color(white), $amount: 15%);
+        color: color(ink);
+      }
+    }
+  }
+
+  &.inverted {
+    background: color(white);
+    border: 3px solid color(ink);
+    color: color(ink);
+    padding: 13px 19px;
+
+    &:not(:disabled) {
+      &:hover {
+        background: darken($color: color(white), $amount: 5%);
+      }
+    }
+  }
+
+  &:not(:disabled) {
+    &:hover {
+      background: darken($color: color(ink), $amount: 10%);
+    }
+  }
+
+  & svg {
+    margin-left: -6px;
+    margin-right: 10px;
+    margin-bottom: -3px;
+  }
+
+  transition: background 0.2s ease;
+}
+
+.Spinner {
+  margin-right: 8px;
+  margin-left: -4px;
+  margin-top: -10px;
+  margin-bottom: -10px;
+}

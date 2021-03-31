@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 
 interface UserSession {
   userId?: number;
+  fullName?: string;
+  username?: string;
   token?: string;
   signIn: (username: string, password: string) => Promise<boolean>;
   signOut: () => void;
@@ -49,11 +51,13 @@ export default function UserSessionContextProvider({ children }: Props) {
     router.push('/');
   }
 
-  const decodedJwt = token ? jwtDecode<JwtPayload>(token).sub : undefined;
-  const userId = decodedJwt ? parseInt(decodedJwt) : undefined;
+  const decodedJwt = token ? jwtDecode<JwtPayload>(token) : undefined;
+  const userId = decodedJwt?.sub ? parseInt(decodedJwt.sub) : undefined;
+  const fullName = decodedJwt?.['name'];
+  const username = decodedJwt?.['username'];
 
   return (
-    <UserSessionContext.Provider value={{ token, userId, signIn, signOut }}>
+    <UserSessionContext.Provider value={{ token, userId, fullName, username, signIn, signOut }}>
       {children}
     </UserSessionContext.Provider>
   );

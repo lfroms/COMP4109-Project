@@ -1,0 +1,93 @@
+@import 'normalize';
+@import 'colors';
+@import 'typography';
+
+html,
+body {
+  background: color(ink);
+
+  height: 100%;
+  width: 100%;
+}
+
+#__next {
+  height: 100%;
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+  color: color(white);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.DropdownSearch__control {
+  .DropdownSearch__multi-value__label {
+    @include text-style-body;
+    color: color(ink);
+  }
+
+  margin: 0;
+  background: color(sky-light) !important;
+  border-radius: 7px !important;
+  min-height: 52px !important;
+  padding: 0 3px 0 10px;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  cursor: text !important;
+
+  color: color(ink);
+
+  @include text-style-body;
+
+  .DropdownSearch__placeholder {
+    color: color(ink-lightest);
+  }
+
+  .DropdownSearch__multi-value {
+    padding: 0;
+    border-radius: 7px !important;
+  }
+
+  .DropdownSearch__multi-value__label {
+    padding: 4px 4px 4px 12px;
+    color: color(ink);
+    border-radius: 6px;
+    background: color(sky);
+  }
+
+  .DropdownSearch__multi-value__remove {
+    border-radius: 0 6px 6px 0;
+    min-width: 30px !important;
+    justify-content: center;
+    background: color(sky);
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+
+    & > svg {
+      width: 16px;
+      height: 16px;
+      fill: color(ink-lightest);
+    }
+
+    &:hover {
+      background: color(sky-dark);
+    }
+  }
+
+  .DropdownSearch__indicator {
+    cursor: pointer;
+  }
+}
+
+.DropdownSearch__option {
+  padding: 12px 22px !important;
+  cursor: pointer !important;
+}
+
+.DropdownSearch__option--is-focused {
+  background-color: color(sky-light) !important;
+}

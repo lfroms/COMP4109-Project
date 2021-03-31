@@ -1,0 +1,29 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.LoginFormLayout {
+  display: flex;
+  flex-direction: row;
+  margin: 50px 0;
+
+  & > :last-child {
+    flex: 0 0 34%;
+  }
+}
+
+.LeftLoginSection {
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
+  flex: 1;
+
+  & > :not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+.PasswordIncorrectText {
+  margin: 0;
+  @include text-style-body;
+  color: color(ink-lighter);
+}

@@ -1,0 +1,30 @@
+@import 'styles/colors';
+
+.Spinner {
+  border: 3px solid transparent;
+  border-top: 3px solid color(ink);
+  border-right: 3px solid color(ink);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  animation: spin 0.9s linear infinite;
+
+  &.light {
+    border-top-color: color(white);
+    border-right-color: color(white);
+  }
+
+  &.subdued {
+    border-top-color: color(sky-light);
+    border-right-color: color(sky-light);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

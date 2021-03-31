@@ -1,0 +1,20 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.TextField {
+  margin: 0;
+  background: color(sky-light);
+  border-radius: 7px;
+  padding: 14px 22px;
+  border: none;
+  outline: none;
+  min-width: 20px;
+
+  color: color(ink);
+
+  @include text-style-body;
+
+  &::placeholder {
+    color: color(ink-lightest);
+  }
+}

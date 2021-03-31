@@ -1,0 +1,57 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.Dropzone {
+  border: 2px dashed color(sky-dark);
+  border-radius: 7px;
+  outline: none;
+  transition: border 0.2s ease;
+
+  cursor: pointer;
+
+  * {
+    color: color(sky-dark);
+    transition: color 0.2s ease, fill 0.2s ease;
+  }
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  .Text {
+    margin-top: 13px;
+    @include text-style-caption;
+  }
+
+  & > svg {
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    $color: darken(
+      $color: color(sky-dark),
+      $amount: 10%,
+    );
+
+    border: 2px dashed $color;
+
+    * {
+      color: $color;
+      fill: $color;
+    }
+  }
+
+  &.active {
+    border-color: color(ink-lighter);
+
+    & > svg {
+      transform: translate(0, -2px);
+    }
+
+    * {
+      color: color(ink-lighter);
+      fill: color(ink-lighter);
+    }
+  }
+}

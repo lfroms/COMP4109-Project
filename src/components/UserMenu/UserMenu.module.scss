@@ -1,0 +1,47 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.UserMenu {
+  padding: 27px 30px;
+  background: darken($color: color(ink), $amount: 2%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.RightSection {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Name {
+  @include text-style-body;
+  font-weight: 700;
+  color: color(sky-light);
+  margin-left: 20px;
+}
+
+.SignOutButton {
+  background: color(ink-light);
+  border: none;
+  border-radius: 7px;
+  width: 33px;
+  height: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: lighten($color: color(ink-light), $amount: 10%);
+  }
+
+  & > svg {
+    margin-left: 2px;
+    margin-top: 1px;
+  }
+}

@@ -1,0 +1,31 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.ConversationHeader {
+  padding: 27px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  h1 {
+    @include text-style-heading;
+    margin: 0;
+  }
+}
+
+.KeyDisplay {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  & > :first-child > svg {
+    margin-right: 12px;
+  }
+
+  p {
+    @include text-style-body;
+    color: color(sky-dark);
+    margin: 0;
+  }
+}

@@ -1,0 +1,29 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.RegistrationFormLayout {
+  display: flex;
+  flex-direction: column;
+  margin: 50px 0;
+}
+
+.BottomRegistrationSection {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  flex: 1;
+
+  & > :not(:last-child) {
+    margin-right: 20px;
+  }
+}
+
+.StandardText {
+  margin: 0;
+  @include text-style-body;
+  color: color(ink-lighter);
+
+  &.withBottomSpacing {
+    margin-bottom: 130px;
+  }
+}

@@ -1,0 +1,59 @@
+@import 'styles/colors';
+@import 'styles/typography';
+
+.MessagesViewContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: 30px;
+}
+
+.MessagesView {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.MessageRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  margin-top: 2px;
+
+  &.fromCurrentUser {
+    justify-content: flex-end;
+  }
+}
+
+.MessageLayout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-top: 22px;
+}
+
+.VerificationLayout {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+
+  & > span {
+    @include text-style-caption;
+    font-weight: 400;
+    color: color(ink-lightest);
+    margin-bottom: 3px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+
+    & > :first-child {
+      margin-right: 6px;
+    }
+  }
+}
+
+.WellLabel {
+  @include text-style-body;
+  color: color(ink-lighter);
+  margin: 20px 0 5px 0;
+}

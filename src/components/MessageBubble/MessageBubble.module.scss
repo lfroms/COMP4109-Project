@@ -1,0 +1,17 @@
+@import 'styles/typography';
+@import 'styles/colors';
+
+.MessageBubble {
+  padding: 14px 22px;
+  background: color(sky-light);
+  @include text-style-body;
+  color: color(ink);
+  border-radius: 26px;
+  display: inline-block;
+  max-width: 400px;
+
+  &.fromSender {
+    background: color(ink);
+    color: color(white);
+  }
+}
