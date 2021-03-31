@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { useConversation, useUserSession } from 'hooks';
 import { ComposerBar, ConversationHeader, MessagesView } from 'components';
+import { createParticipantNamesList } from 'helpers';
 
 interface Params extends NodeJS.Dict<string | string[]> {
   conversationId: string;
@@ -39,6 +41,10 @@ export default function Conversation() {
 
   return (
     <>
+      <Head>
+        <title>{createParticipantNamesList(participants, user?.id)} | Cryptochat</title>
+      </Head>
+
       <ConversationHeader
         currentUserId={user?.id}
         participants={participants}

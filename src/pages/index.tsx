@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { useUserSession } from 'hooks';
 import { Button, Dropzone, LandingLayout, Link, Modal, TextField } from 'components';
 
@@ -55,6 +56,10 @@ export default function Index() {
 
   return (
     <>
+      <Head>
+        <title>Cryptochat</title>
+      </Head>
+
       <LandingLayout
         title="Log in"
         buttonRow={
