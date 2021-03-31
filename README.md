@@ -47,6 +47,18 @@ brew services start postgresql
 
 > On Windows, you will need to install PostgreSQL from [the website](https://www.postgresql.org) manually, and install it. Note that some of the `yarn db:xx` commands may not work on Windows, depending on how you've installed PostgreSQL.
 
+Next, create a file called `.env` in the root of this project. This file contains the environment variables. In order for JSON Web Token signing to work, a signing secret must be established on the server. To generate a random secret, execute the following:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(256).toString('base64'));"
+```
+
+You can then copy this value and paste it into the `.env` file, replacing `<my_secret>` with the secret you copied:
+
+```
+TOKEN_SECRET=<my_secret>
+```
+
 Then, once in the project directory, run the following to set up the dependencies and migrate the database:
 
 ```bash
