@@ -28,10 +28,13 @@ This project was created by:
 - [NextJS](https://nextjs.org) application architecture framework. Also provides server-side rendering of the client app.
 - [socket.io](https://socket.io) for realtime messaging and communication.
 - [Express](http://expressjs.com) server backbone.
+- [NodeJS](https://nodejs.org/en/) version 15.10.0.
 - [TypeORM](https://typeorm.io/) as a database management interface from the server.
 - [PostgreSQL](https://www.postgresql.org) as a database management system.
 
 ## Installation
+
+> **Note:** Most versions of NodeJS since `v10` should work.
 
 There are a few prerequisites that must be met in order for the application to launch. Firstly, the PostgreSQL server must be up and running.
 
