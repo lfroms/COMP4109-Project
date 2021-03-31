@@ -36,6 +36,8 @@ This project was created by:
 
 > **Note:** Most versions of NodeJS since `v10` should work.
 
+> **Note:** These instructions mostly assume that the project is being run on a macOS or Linux platform.
+
 There are a few prerequisites that must be met in order for the application to launch. Firstly, the PostgreSQL server must be up and running.
 
 On macOS, you can use Homebrew to install PostgreSQL. Ideally, do not provide a password for the default superuser role.
