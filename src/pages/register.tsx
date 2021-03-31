@@ -74,7 +74,11 @@ export default function Register() {
       </Button>
     </>
   ) : (
-    <Button onClick={handleRegister} loading={loading}>
+    <Button
+      onClick={handleRegister}
+      loading={loading}
+      disabled={!fullName || !username || !password}
+    >
       Next
     </Button>
   );

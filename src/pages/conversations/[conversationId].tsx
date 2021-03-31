@@ -33,7 +33,11 @@ export default function Conversation() {
 
   return (
     <>
-      <ConversationHeader participants={participants} sharedSecret={sharedSecret} />
+      <ConversationHeader
+        currentUserId={userId ?? 0}
+        participants={participants}
+        sharedSecret={sharedSecret}
+      />
       <MessagesView
         messages={messages}
         encryptedMessages={encryptedMessages}

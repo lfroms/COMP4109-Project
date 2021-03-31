@@ -98,7 +98,7 @@ export default function ConversationsList() {
         <ul>
           {conversations.map((conversation, index) => {
             const active = window.location.pathname === `/conversations/${conversation.id}`;
-            const iconName = conversation.participants.length === 1 ? 'person' : 'people';
+            const iconName = conversation.participants.length <= 2 ? 'person' : 'people';
             const iconColor = active ? 'dark' : 'light';
 
             return (
@@ -107,9 +107,13 @@ export default function ConversationsList() {
                 className={classNames(styles.ConversationItem, active && styles.active)}
               >
                 <Link href={`/conversations/${conversation.id}`}>
-                  <a className={styles.Link}>
-                    <Icon name={iconName} color={iconColor} />
-                    <span>{createParticipantNamesList(conversation.participants)}</span>
+                  <a>
+                    <span className={styles.ConversationItemIcon}>
+                      <Icon name={iconName} color={iconColor} />
+                    </span>
+                    <span>
+                      {createParticipantNamesList(userId ?? 0, conversation.participants)}
+                    </span>
                   </a>
                 </Link>
               </li>

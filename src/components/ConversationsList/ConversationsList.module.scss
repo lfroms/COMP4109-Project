@@ -8,6 +8,7 @@
   justify-content: space-between;
   padding-top: 24px;
   padding-right: 30px;
+  overflow-y: auto;
 
   ul {
     list-style: none;
@@ -57,13 +58,6 @@
   }
 }
 
-.Link {
-  > :first-child > svg {
-    margin-right: 12px;
-    margin-bottom: -2px;
-  }
-}
-
 .DropdownSearch {
   * {
     color: color(ink);
@@ -74,4 +68,15 @@
 
 .Modal {
   min-width: 650px !important;
+}
+
+.ConversationItemIcon {
+  display: inline-block;
+  min-width: 30px;
+  text-align: center;
+  margin-right: 10px;
+
+  svg {
+    margin-bottom: -2px;
+  }
 }

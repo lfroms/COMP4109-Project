@@ -5,14 +5,15 @@ import { Icon } from 'components';
 import styles from './ConversationHeader.module.scss';
 
 interface Props {
+  currentUserId: number;
   participants: API.User[];
   sharedSecret?: string;
 }
 
-export default function ConversationHeader({ participants, sharedSecret }: Props) {
+export default function ConversationHeader({ currentUserId, participants, sharedSecret }: Props) {
   return (
     <div className={styles.ConversationHeader}>
-      <h1>{createParticipantNamesList(participants)}</h1>
+      <h1>{createParticipantNamesList(currentUserId, participants)}</h1>
 
       <div className={styles.KeyDisplay}>
         <Icon name="key" color="subdued" />

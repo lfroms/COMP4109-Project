@@ -1,9 +1,18 @@
-export default function createParticipantNamesList(participants: API.User[]) {
+export default function createParticipantNamesList(
+  currentUserId: number,
+  participants: API.User[]
+) {
   if (!participants.length) {
     return '';
   }
 
-  const names = participants.map(participant => {
+  const filteredParticipants = participants.filter(participant => participant.id !== currentUserId);
+
+  if (!filteredParticipants.length) {
+    return participants[0].name;
+  }
+
+  const names = filteredParticipants.map(participant => {
     const parts = participant.name.split(' ');
 
     if (parts.length !== 2) {
@@ -13,13 +22,13 @@ export default function createParticipantNamesList(participants: API.User[]) {
     return parts[0];
   });
 
-  if (names.length > 2) {
+  if (filteredParticipants.length > 2) {
     return names.join(', ');
   }
 
-  if (names.length === 2) {
+  if (filteredParticipants.length === 2) {
     return names.join(' & ');
   }
 
-  return participants[0].name;
+  return filteredParticipants[0].name;
 }
