@@ -19,21 +19,21 @@ interface DropdownSelectOption {
 }
 
 export default function ConversationsList() {
-  const { userId } = useUserSession();
+  const { user } = useUserSession();
   const fetchUsers = useFetchUsers();
   const [newConversationModalVisible, setNewConversationModalVisible] = useState(false);
   const [newConversationLoading, setNewConversationLoading] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState<DropdownSelectOption[]>([]);
 
-  const { conversations, createConversation } = useConversations(userId ?? 0);
+  const { conversations, createConversation } = useConversations();
 
   async function handleCreateConversation() {
-    if (!userId) {
+    if (!user?.id) {
       return;
     }
 
     setNewConversationLoading(true);
-    const users = await fetchUsers([userId, ...selectedUsers.map(user => user.value)]);
+    const users = await fetchUsers([user.id, ...selectedUsers.map(user => user.value)]);
 
     if (!users) {
       console.error('Could not create conversation as participants could not be fetched.');
@@ -84,8 +84,8 @@ export default function ConversationsList() {
     }
 
     return users
-      .filter(user => user.name.toLowerCase().includes(value.toLowerCase()))
-      .filter(user => user.id !== userId)
+      .filter(entity => entity.name.toLowerCase().includes(value.toLowerCase()))
+      .filter(entity => entity.id !== user?.id)
       .map(user => ({
         value: user.id,
         label: user.name,
@@ -111,9 +111,7 @@ export default function ConversationsList() {
                     <span className={styles.ConversationItemIcon}>
                       <Icon name={iconName} color={iconColor} />
                     </span>
-                    <span>
-                      {createParticipantNamesList(userId ?? 0, conversation.participants)}
-                    </span>
+                    <span>{createParticipantNamesList(conversation.participants, user?.id)}</span>
                   </a>
                 </Link>
               </li>

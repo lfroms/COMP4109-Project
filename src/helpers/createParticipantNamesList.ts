@@ -1,6 +1,6 @@
 export default function createParticipantNamesList(
-  currentUserId: number,
-  participants: API.User[]
+  participants: API.User[],
+  currentUserId?: number
 ) {
   if (!participants.length) {
     return '';

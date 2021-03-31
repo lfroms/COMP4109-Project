@@ -8,7 +8,7 @@ export default function useFetchUsers() {
 
     const response = await authenticatedFetch<API.UsersResponse>(path, 'GET');
 
-    if (!response.data?.users) {
+    if (!response.data) {
       return;
     }
 

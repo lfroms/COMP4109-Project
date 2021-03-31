@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useConversation, useUserSession } from 'hooks';
 import { ComposerBar, ConversationHeader, MessagesView } from 'components';
@@ -9,21 +9,27 @@ interface Params extends NodeJS.Dict<string | string[]> {
 
 export default function Conversation() {
   const router = useRouter();
-  const { userId } = useUserSession();
+  const { user } = useUserSession();
   const [currentMessageText, setCurrentMessageText] = useState('');
   const { conversationId } = router.query as Params;
 
   const { messages, encryptedMessages, sendMessage, sharedSecret, participants } = useConversation(
-    conversationId
+    parseInt(conversationId)
   );
 
+  useEffect(() => {
+    if (!user) {
+      router.replace('/');
+    }
+  });
+
   function handleSendButtonClick() {
-    if (!userId || !currentMessageText) {
+    if (!user || !currentMessageText) {
       return;
     }
 
     const message: DecryptedMessagePayload = {
-      senderId: userId,
+      senderId: user.id,
       text: currentMessageText,
     };
 
@@ -34,7 +40,7 @@ export default function Conversation() {
   return (
     <>
       <ConversationHeader
-        currentUserId={userId ?? 0}
+        currentUserId={user?.id}
         participants={participants}
         sharedSecret={sharedSecret}
       />
@@ -42,7 +48,7 @@ export default function Conversation() {
         messages={messages}
         encryptedMessages={encryptedMessages}
         participants={participants}
-        currentUserId={userId}
+        currentUserId={user?.id}
       />
       <ComposerBar
         value={currentMessageText}

@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useKeyStore, useUserSession } from 'hooks';
-import { StorageKey } from 'types';
+import { useUserSession } from 'hooks';
 import { Button, Dropzone, LandingLayout, Link, Modal, TextField } from 'components';
 
 import styles from './index.module.scss';
@@ -16,8 +15,13 @@ export default function Index() {
 
   const [errorModalVisible, setErrorModalVisible] = useState(false);
 
-  const { setKey: setPrivateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
-  const { signIn } = useUserSession();
+  const { user, signIn } = useUserSession();
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/conversations');
+    }
+  }, [user]);
 
   async function handleLogin() {
     if (!pemFile) {
@@ -31,7 +35,7 @@ export default function Index() {
       // It can only be a string since we are using readAsText.
       const pemContents = fileReader.result as string;
 
-      const result = await signIn(userName, password);
+      const result = await signIn(userName, password, pemContents);
 
       if (!result) {
         setErrorModalVisible(true);
@@ -39,8 +43,6 @@ export default function Index() {
 
         return;
       }
-
-      setPrivateKey(pemContents);
 
       setTimeout(() => {
         setLoading(false);

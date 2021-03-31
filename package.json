@@ -32,6 +32,7 @@
     "react-dropzone": "^11.3.2",
     "react-modal": "^3.12.1",
     "react-select": "^4.3.0",
+    "react-storage-hooks": "^4.0.1",
     "reflect-metadata": "^0.1.13",
     "sass": "^1.32.8",
     "socket.io": "^3.1.2",
