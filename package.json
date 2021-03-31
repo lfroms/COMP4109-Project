@@ -10,7 +10,7 @@
     "build:server": "tsc --project tsconfig.production.json",
     "build:next": "next build",
     "build": "yarn build:next && yarn build:server",
-    "start:dev": "nodemon src/index.ts -i src/pages -i src/components -i src/hooks -i src/services",
+    "start:dev": "NODE_ENV=development nodemon src/index.ts -i src/pages -i src/components -i src/hooks -i src/services",
     "start:prod": "NODE_ENV=production node public/index.js",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
