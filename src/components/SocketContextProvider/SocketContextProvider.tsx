@@ -16,10 +16,10 @@ interface Props {
 }
 
 export default function SocketContextProvider({ children }: Props) {
-  const { token, userId } = useUserSession();
+  const { user } = useUserSession();
 
   useEffect(() => {
-    if (!token) {
+    if (!user) {
       socket.emit(SocketEvent.DEREGISTER_CONNECTION);
 
       if (socket.io.opts.query) {
@@ -31,22 +31,18 @@ export default function SocketContextProvider({ children }: Props) {
       return;
     }
 
-    if (socket.io.opts.query && socket.io.opts.query['token'] !== token) {
+    if (socket.io.opts.query && socket.io.opts.query['token'] !== user.token) {
       socket.close();
-      socket.io.opts.query['token'] = token;
+      socket.io.opts.query['token'] = user.token;
       socket.open();
 
-      if (!userId) {
-        return;
-      }
-
       const connectionRegistrationPayload: ConnectionRegisterPayload = {
-        userId,
+        userId: user.id,
       };
 
       socket.emit(SocketEvent.REGISTER_CONNECTION, connectionRegistrationPayload);
     }
-  }, [token]);
+  }, [user]);
 
   return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 }

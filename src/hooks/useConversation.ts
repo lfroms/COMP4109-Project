@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { SocketEvent, StorageKey } from 'types';
-import { useAuthenticatedFetch, useKeyStore, useSocketContext, useUserSession } from 'hooks';
+import { SocketEvent } from 'types';
+import { useAuthenticatedFetch, useSocketContext, useUserSession } from 'hooks';
 import {
   AsymmetricEncryptionService,
   MessageAuthenticationService,
@@ -8,16 +8,15 @@ import {
   SymmetricEncryptionService,
 } from 'services';
 
-export default function useConversation(conversationId: string) {
+export default function useConversation(conversationId: number) {
   const socket = useSocketContext();
   const [messages, setMessages] = useState<DecryptedMessagePayload[]>([]);
   const [encryptedMessages, setEncryptedMessages] = useState<EncryptedMessagePayload[]>([]);
   const [participants, setParticipants] = useState<API.User[]>([]);
-  const { userId } = useUserSession();
+  const { user } = useUserSession();
   const authenticatedFetch = useAuthenticatedFetch();
   const symmetricEncryptionServiceRef = useRef<SymmetricEncryptionService>();
   const messageAuthenticationServiceRef = useRef<MessageAuthenticationService>();
-  const { value: privateKey } = useKeyStore(StorageKey.PRIVATE_KEY);
   const [sharedSecret, setSharedSecret] = useState<string | undefined>();
 
   useEffect(() => {
@@ -31,7 +30,7 @@ export default function useConversation(conversationId: string) {
       }
 
       // Don't display messages from other conversations.
-      if (message.conversationId !== parseInt(conversationId)) {
+      if (message.conversationId !== conversationId) {
         return;
       }
 
@@ -55,12 +54,16 @@ export default function useConversation(conversationId: string) {
   }, [conversationId]);
 
   async function fetchPersonalConversationKey() {
+    if (!user) {
+      return;
+    }
+
     const response = await authenticatedFetch<API.PersonalConversationKeyResponse>(
-      `/api/personal-conversation-key?userId=${userId}&conversationId=${conversationId}`,
+      `/api/personal-conversation-key?userId=${user.id}&conversationId=${conversationId}`,
       'GET'
     );
 
-    if (!response.data?.personalConversationKey) {
+    if (!response.data) {
       console.error('Could not fetch personal conversation key for this conversation.');
 
       return;
@@ -68,25 +71,27 @@ export default function useConversation(conversationId: string) {
 
     const { personalConversationKey, hmacKey } = response.data;
 
-    const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(privateKey);
+    const importedPrivateKey = await PrivateKeyTransportService.createCryptoKeyFromPem(
+      user.privateKey
+    );
     const asymmetricService = new AsymmetricEncryptionService();
 
     const decryptedSymmetricKey = await asymmetricService.decrypt(
       personalConversationKey,
       importedPrivateKey
     );
-    const decryptedHmacKey = await asymmetricService.decrypt(hmacKey, importedPrivateKey);
-
-    const sharedSecretAsCryptoKey = await SymmetricEncryptionService.createCryptoKeyFromString(
+    const symmetricKeyAsCryptoKey = await SymmetricEncryptionService.createCryptoKeyFromString(
       decryptedSymmetricKey
     );
+
+    const decryptedHmacKey = await asymmetricService.decrypt(hmacKey, importedPrivateKey);
     const hmacAsCryptoKey = await MessageAuthenticationService.createCryptoKeyFromString(
       decryptedHmacKey
     );
 
     setSharedSecret(decryptedSymmetricKey);
 
-    symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(sharedSecretAsCryptoKey);
+    symmetricEncryptionServiceRef.current = new SymmetricEncryptionService(symmetricKeyAsCryptoKey);
     messageAuthenticationServiceRef.current = new MessageAuthenticationService(hmacAsCryptoKey);
   }
 
@@ -106,7 +111,7 @@ export default function useConversation(conversationId: string) {
       if (
         !symmetricEncryptionServiceRef.current ||
         !messageAuthenticationServiceRef.current ||
-        !userId
+        !user
       ) {
         return;
       }
@@ -172,7 +177,7 @@ export default function useConversation(conversationId: string) {
       senderId: message.senderId,
       data,
       hmac: await messageAuthenticationServiceRef.current.sign(data.m),
-      conversationId: parseInt(conversationId),
+      conversationId,
     };
 
     socket.emit(SocketEvent.MESSAGE, encryptedMessage);

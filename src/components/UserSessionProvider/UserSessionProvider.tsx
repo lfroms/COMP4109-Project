@@ -1,15 +1,20 @@
-import React, { createContext } from 'react';
-import { useSessionStorage } from 'hooks';
+import React, { createContext, useMemo } from 'react';
+import { useStorageState } from 'react-storage-hooks';
+import { StorageObj } from 'react-storage-hooks/dist/common';
 import { StorageKey } from 'types';
 import jwtDecode, { JwtPayload } from 'jwt-decode';
-import { useRouter } from 'next/router';
+
+interface UserMetadata {
+  id: number;
+  username: string;
+  fullName: string;
+  token: string;
+  privateKey: string;
+}
 
 interface UserSession {
-  userId?: number;
-  fullName?: string;
-  username?: string;
-  token?: string;
-  signIn: (username: string, password: string) => Promise<boolean>;
+  user?: UserMetadata;
+  signIn: (username: string, password: string, pemContents: string) => Promise<boolean>;
   signOut: () => void;
 }
 
@@ -23,10 +28,25 @@ interface Props {
 }
 
 export default function UserSessionContextProvider({ children }: Props) {
-  const router = useRouter();
-  const { set: setToken, remove: clearToken, value: token } = useSessionStorage(StorageKey.TOKEN);
+  // Need to force the storage object to undefined so that SSR doesn't fail.
+  // This code should continue to work when the app is mounted in the client.
+  const ssrLocalStorage = (typeof localStorage !== 'undefined'
+    ? localStorage
+    : undefined) as StorageObj;
 
-  async function signIn(username: string, password: string) {
+  const [token, setToken] = useStorageState<string | undefined>(
+    ssrLocalStorage,
+    StorageKey.TOKEN,
+    undefined
+  );
+
+  const [privateKey, setPrivateKey] = useStorageState<string | undefined>(
+    ssrLocalStorage,
+    StorageKey.PRIVATE_KEY,
+    undefined
+  );
+
+  async function signIn(username: string, password: string, pemContents: string) {
     const response = await fetch(`/api/auth`, {
       method: 'POST',
       headers: {
@@ -42,22 +62,38 @@ export default function UserSessionContextProvider({ children }: Props) {
     }
 
     setToken(jsonResponse.data.token);
+    setPrivateKey(pemContents);
 
     return true;
   }
 
   function signOut() {
-    clearToken();
-    router.push('/');
+    setToken(undefined);
+    setPrivateKey(undefined);
   }
 
-  const decodedJwt = token ? jwtDecode<JwtPayload>(token) : undefined;
-  const userId = decodedJwt?.sub ? parseInt(decodedJwt.sub) : undefined;
-  const fullName = decodedJwt?.['name'];
-  const username = decodedJwt?.['username'];
+  const userMetadata = useMemo<UserMetadata | undefined>(() => {
+    if (!token || !privateKey) {
+      return undefined;
+    }
+
+    const decodedToken = jwtDecode<JwtPayload>(token);
+
+    if (!decodedToken.sub) {
+      return undefined;
+    }
+
+    return {
+      id: parseInt(decodedToken.sub),
+      username: decodedToken['username'],
+      fullName: decodedToken['name'],
+      token,
+      privateKey,
+    };
+  }, [token, privateKey]);
 
   return (
-    <UserSessionContext.Provider value={{ token, userId, fullName, username, signIn, signOut }}>
+    <UserSessionContext.Provider value={{ user: userMetadata, signIn, signOut }}>
       {children}
     </UserSessionContext.Provider>
   );
