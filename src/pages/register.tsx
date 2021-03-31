@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { useRegistration } from 'hooks';
 import { AsymmetricEncryptionService, PrivateKeyTransportService } from 'services';
 import { Button, LandingLayout, Modal, TextField } from 'components';
@@ -101,6 +102,10 @@ export default function Register() {
 
   return (
     <>
+      <Head>
+        <title>Register | Cryptochat</title>
+      </Head>
+
       <LandingLayout title={title} buttonRow={buttons}>
         {content}
       </LandingLayout>

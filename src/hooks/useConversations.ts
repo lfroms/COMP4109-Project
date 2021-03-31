@@ -1,20 +1,25 @@
-import { useAuthenticatedFetch } from 'hooks';
 import { useEffect, useState } from 'react';
+import { useAuthenticatedFetch, useUserSession } from 'hooks';
 import { SocketEvent } from 'types';
 import useSocketContext from './useSocketContext';
 
-export default function useConversations(userId: number) {
+export default function useConversations() {
   const socket = useSocketContext();
+  const { user } = useUserSession();
   const authenticatedFetch = useAuthenticatedFetch();
   const [conversations, setConversations] = useState<API.Conversation[]>([]);
 
   async function fetchConversations() {
+    if (!user) {
+      return;
+    }
+
     const response = await authenticatedFetch<API.ConversationsResponse>(
-      `/api/conversations?userId=${userId}`,
+      `/api/conversations?userId=${user.id}`,
       'GET'
     );
 
-    if (!response.data?.conversations) {
+    if (!response.data) {
       return;
     }
 
@@ -34,10 +39,16 @@ export default function useConversations(userId: number) {
   }
 
   useEffect(() => {
-    fetchConversations();
-    subscribeToConversations({ userId });
+    if (user) {
+      fetchConversations();
+      subscribeToConversations({ userId: user.id });
 
-    socket.on(SocketEvent.NOTIFY_CONVERSATIONS, fetchConversations);
+      socket.on(SocketEvent.NOTIFY_CONVERSATIONS, fetchConversations);
+    }
+
+    return () => {
+      socket.off(SocketEvent.NOTIFY_CONVERSATIONS);
+    };
   }, []);
 
   return { conversations, createConversation };

@@ -8,20 +8,19 @@ import styles from './UserMenu.module.scss';
 export default function UserMenu() {
   const router = useRouter();
   const fetchUsers = useFetchUsers();
-  const { userId, fullName, signOut } = useUserSession();
+  const { user } = useUserSession();
   const [publicKey, setPublicKey] = useState('');
 
   function handleLogOut() {
-    signOut();
-    router.replace('/');
+    router.replace('/logout');
   }
 
   async function fetchUserPublicKey() {
-    if (!userId) {
+    if (!user) {
       return;
     }
 
-    const users = await fetchUsers([userId]);
+    const users = await fetchUsers([user.id]);
 
     if (!users) {
       return;
@@ -32,14 +31,14 @@ export default function UserMenu() {
 
   useEffect(() => {
     fetchUserPublicKey();
-  }, [userId]);
+  }, [user?.id]);
 
   return (
     <div className={styles.UserMenu}>
-      <Avatar fullName={fullName ?? 'User'} publicKey={publicKey} small />
+      <Avatar fullName={user?.fullName ?? 'User'} publicKey={publicKey} small />
 
       <div className={styles.RightSection}>
-        <span className={styles.Name}>{fullName}</span>
+        <span className={styles.Name}>{user?.fullName}</span>
 
         <button className={styles.SignOutButton} onClick={handleLogOut}>
           <svg height="13" viewBox="0 0 17 13" width="17" xmlns="http://www.w3.org/2000/svg">
