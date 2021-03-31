@@ -19,6 +19,10 @@ export default function Index() {
   const { user, signIn } = useUserSession();
 
   useEffect(() => {
+    if (loading || userName || password || pemFile) {
+      return;
+    }
+
     if (user) {
       router.replace('/conversations');
     }
