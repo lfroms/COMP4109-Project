@@ -45,8 +45,8 @@ export default function MessagesView({
         text={message.text}
         fromSender
         onClick={() => {
-          setSelectedMessage(message);
           setModalVisible(true);
+          setSelectedMessage(message);
         }}
       />
     ) : (
@@ -62,8 +62,8 @@ export default function MessagesView({
             text={message.text}
             fromSender={false}
             onClick={() => {
-              setSelectedMessage(message);
               setModalVisible(true);
+              setSelectedMessage(message);
             }}
           />
         </div>
@@ -76,6 +76,10 @@ export default function MessagesView({
       </div>
     );
   });
+
+  const selectedMessageEncrypted = encryptedMessages.find(
+    message => message.id === selectedMessage?.id
+  );
 
   return (
     <>
@@ -90,26 +94,14 @@ export default function MessagesView({
         title={`Message Details (${selectedMessage?.text.slice(0, 14)}...)`}
         actions={<Button onClick={() => setModalVisible(false)}>Close</Button>}
       >
-        {(() => {
-          const message = encryptedMessages.find(message => message.id === selectedMessage?.id);
+        <p className={styles.WellLabel}>Ciphertext:</p>
+        <Well>{selectedMessageEncrypted?.data.m ?? ''}</Well>
 
-          if (!message) {
-            return null;
-          }
+        <p className={styles.WellLabel}>Initialization vector:</p>
+        <Well>{selectedMessageEncrypted?.data.iv ?? ''}</Well>
 
-          return (
-            <>
-              <p className={styles.WellLabel}>Ciphertext:</p>
-              <Well>{message.data.m}</Well>
-
-              <p className={styles.WellLabel}>Initialization vector:</p>
-              <Well>{message.data.iv}</Well>
-
-              <p className={styles.WellLabel}>Message authentication code:</p>
-              <Well>{message.hmac}</Well>
-            </>
-          );
-        })()}
+        <p className={styles.WellLabel}>Message authentication code:</p>
+        <Well>{selectedMessageEncrypted?.hmac ?? ''}</Well>
       </Modal>
     </>
   );
